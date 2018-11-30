@@ -128,7 +128,6 @@ class WriteStream(ConsumerPE):
         ConsumerPE.__init__(self)
 
     def _process(self, data):
-        self.log("data is %s" % data)
         filename,stream,ty,pgd,pgv,pga,dmp_spec_acc=data
         stats = stream[0].stats
         output_dir="./"
