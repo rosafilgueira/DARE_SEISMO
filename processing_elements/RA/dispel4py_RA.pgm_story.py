@@ -129,7 +129,6 @@ class WriteStream(ConsumerPE):
 
     def _process(self, data):
         filename,stream,ty,pgd,pgv,pga,dmp_spec_acc=data
-        stats = stream[0].stats
         output_dir="./"
         output_data={"GroundMotion": {
         "stream":filename, 
