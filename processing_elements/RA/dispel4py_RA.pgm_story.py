@@ -14,6 +14,8 @@ from obspy.signal import differentiate_and_integrate as di
 
 import math
 import numpy as np
+import os
+import json
 
 def norm(stream):
     station = stream[0].stats.station
@@ -51,7 +53,7 @@ class StreamProducer(IterativePE):
         IterativePE.__init__(self)    
 
     def _process(self, filename):
-        self.write('output', read(filename))                
+        self.write('output', [read(filename), filename])                
 
 
 class PeakGroundMotion(IterativePE):
@@ -59,9 +61,8 @@ class PeakGroundMotion(IterativePE):
         IterativePE.__init__(self)
         self.ty=ty
        
-    def _process(self, stream):
-        print("Process")
-        print(stream)
+    def _process(self, s_data):
+	stream, filename = s_data
         data, d = norm(stream)
         delta = stream[0].stats.delta
         pgm = max(abs(data))
@@ -84,7 +85,7 @@ class PeakGroundMotion(IterativePE):
             int2_data = di.integrate_cumtrapz(int_data, delta)
             pgd = max(abs(int2_data))
         
-        self.write('output', [stream, self.ty, pgd, pgv, pga])   
+        self.write('output', [filename, stream, self.ty, pgd, pgv, pga])   
 
 class DampedSpectralAcc(IterativePE):
     def __init__(self, freq, damp):
@@ -93,7 +94,7 @@ class DampedSpectralAcc(IterativePE):
         self.damp=damp
         
     def _process(self, data):
-        stream,ty,pgd,pgv,pga=data
+        filename,stream,ty,pgd,pgv,pga=data
         
         for t in stream:
             tr = t.copy()
@@ -120,15 +121,39 @@ class DampedSpectralAcc(IterativePE):
                                     simulate_sensitivity=True, taper_fraction=0.05)
             dmp_spec_acc = max(abs(data))
         
-        self.write('output', [stream, ty, pgd, pgv, pga, dmp_spec_acc])    
+        self.write('output', [filename, stream, ty, pgd, pgv, pga, dmp_spec_acc])    
+
+class WriteStream(ConsumerPE):
+    def __init__(self):
+        ConsumerPE.__init__(self)
+
+    def _process(self, data):
+        self.log("data is %s" % data)
+        filename,stream,ty,pgd,pgv,pga,dmp_spec_acc=data
+        stats = stream[0].stats
+        output_dir="./"
+        output_data={"GroundMotion": {
+        "stream":filename, 
+      	"ty": ty,
+      	"pgd": str(pgd),
+      	"pgv": str(pgv),
+      	"pga": str(pga),
+      	"dmp_spec_acc": str(dmp_spec_acc)}}
+        self.log("output_data is %s" % output_data) 
+        filename="GroundMotion"+"_"+filename+".json"
+        with open(filename, 'w') as outfile:
+    		json.dump(output_data, outfile)
+
 
 streamProducer=StreamProducer()
 streamProducer.name='streamProducer'
 pgm=PeakGroundMotion('velocity')
 dsa=DampedSpectralAcc(0.3,0.1)
+write_stream = WriteStream()
 
 
 graph = WorkflowGraph()
 graph.connect(streamProducer, 'output', pgm,'input')
 graph.connect(pgm,'output',dsa,'input')
+graph.connect(dsa,'output',write_stream,'input')
 
