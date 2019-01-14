@@ -1,7 +1,7 @@
 '''
 Execution:
-Real --> dispel4py simple dispel4py_RA.pgm_story.py -d '{"streamProducer": [ {"input": "IV.MA9..HHR.START.OTLOC.SAC.20.50.real"} ] }'
-Synth --> dispel4py simple dispel4py_RA.pgm_story.py -d '{"streamProducer": [ {"input": "IV.MA9.HXR.semv.sac.20.50.synt"} ] }'
+Real --> dispel4py simple dispel4py_RA.pgm_story.py -d '{"streamProducer": [ {"input": ["IV.MA9..HHR.START.OTLOC.SAC.20.50.real", "max"]} ] }'
+Synth --> dispel4py simple dispel4py_RA.pgm_story.py -d '{"streamProducer": [ {"input": ["IV.MA9.HXR.semv.sac.20.50.synt", "max"]} ] }'
 '''
 
 from dispel4py.core import GenericPE
@@ -17,7 +17,7 @@ import numpy as np
 import os
 import json
 
-def norm(stream):
+def norm(stream, p_norm):
     station = stream[0].stats.station
     channels = set()
     for tr in stream:
@@ -25,12 +25,13 @@ def norm(stream):
             channels.add(tr.stats.channel[-1])
         else:
             return None
-          
-    print('Station: %s' % station)
-    print('Channels: %s' % channels)
+    
+    #print("info %s" % stream[0].stats)      
+    #print('Station: %s' % station)
+    #print('Channels: %s' % channels)
 
     data = None
-    if channels < set(['R','T','Z']) or channels < set(['N','E','Z']):
+    if channels < set(['R','T']) or channels < set(['N','E']):
         
         if len(stream) == 1:
             return stream[0].data.copy(), None
@@ -38,10 +39,19 @@ def norm(stream):
         for tr in stream:
             d = tr.data.copy()
             if data is not None:
-                data = data + np.square(d)
+                if p_norm == "mean":
+                    data = data + np.square(d)
+                elif p_norm == "max":
+                    data = data + np.abs(d)
             else:
-                data = np.square(d)
-        data = np.sqrt(data)
+                if p_norm == "mean":
+                    data = np.square(d)
+                elif p_norm == "max":
+                    data = np.abs(d)
+        if p_norm == "mean":
+            data = np.sqrt(data)
+        elif p_norm == "max":
+            data = np.max(data)
 
         
     return data, d
@@ -52,8 +62,9 @@ class StreamProducer(IterativePE):
     def __init__(self):
         IterativePE.__init__(self)    
 
-    def _process(self, filename):
-        self.write('output', [read(filename), filename])                
+    def _process(self, input):
+        filename, p_norm = input
+        self.write('output', [read(filename), filename, p_norm])                
 
 
 class PeakGroundMotion(IterativePE):
@@ -62,8 +73,8 @@ class PeakGroundMotion(IterativePE):
         self.ty=ty
        
     def _process(self, s_data):
-	stream, filename = s_data
-        data, d = norm(stream)
+        stream, filename, p_norm = s_data
+        data, d = norm(stream, p_norm)
         delta = stream[0].stats.delta
         pgm = max(abs(data))
         if self.ty == 'velocity':
@@ -85,7 +96,7 @@ class PeakGroundMotion(IterativePE):
             int2_data = di.integrate_cumtrapz(int_data, delta)
             pgd = max(abs(int2_data))
         
-        self.write('output', [filename, stream, self.ty, pgd, pgv, pga])   
+        self.write('output', [filename, stream, self.ty, pgd, pgv, pga, p_norm])   
 
 class DampedSpectralAcc(IterativePE):
     def __init__(self, freq, damp):
@@ -94,7 +105,7 @@ class DampedSpectralAcc(IterativePE):
         self.damp=damp
         
     def _process(self, data):
-        filename,stream,ty,pgd,pgv,pga=data
+        filename,stream,ty,pgd,pgv,pga,p_norm=data
         
         for t in stream:
             tr = t.copy()
@@ -121,18 +132,19 @@ class DampedSpectralAcc(IterativePE):
                                     simulate_sensitivity=True, taper_fraction=0.05)
             dmp_spec_acc = max(abs(data))
         
-        self.write('output', [filename, stream, ty, pgd, pgv, pga, dmp_spec_acc])    
+        self.write('output', [filename, stream, ty, pgd, pgv, pga, dmp_spec_acc, p_norm])    
 
 class WriteStream(ConsumerPE):
     def __init__(self):
         ConsumerPE.__init__(self)
 
     def _process(self, data):
-        filename,stream,ty,pgd,pgv,pga,dmp_spec_acc=data
+        filename,stream,ty,pgd,pgv,pga,dmp_spec_acc,p_norm=data
         output_dir="./"
         output_data={"GroundMotion": {
         "stream":filename, 
       	"ty": ty,
+        "p_norm": p_norm,
       	"pgd": str(pgd),
       	"pgv": str(pgv),
       	"pga": str(pga),
@@ -140,7 +152,7 @@ class WriteStream(ConsumerPE):
         self.log("output_data is %s" % output_data) 
         filename="GroundMotion"+"_"+filename+".json"
         with open(filename, 'w') as outfile:
-    		json.dump(output_data, outfile)
+    	    json.dump(output_data, outfile)
 
 
 streamProducer=StreamProducer()
