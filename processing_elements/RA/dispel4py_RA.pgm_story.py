@@ -26,10 +26,6 @@ def norm(stream, p_norm):
         else:
             return None
     
-    #print("info %s" % stream[0].stats)      
-    #print('Station: %s' % station)
-    #print('Channels: %s' % channels)
-
     data = None
     if channels < set(['R','T']) or channels < set(['N','E']):
         
