@@ -1,7 +1,7 @@
 '''
 Execution:
 Real --> dispel4py simple dispel4py_RA.pgm_story.py -d '{"streamProducer": [ {"input": "IV.MA9..HHR.START.OTLOC.SAC.20.50.real"} ] }'
-Synth --> dispel4py simple dispel4py_RA.pgm_story.py -d '{"streamProducer": [ {"input": ["IV.MA9.HXR.semv.sac.20.50.synt"]} ] }'
+Synth --> dispel4py simple dispel4py_RA.pgm_story.py -d '{"streamProducer": [ {"input": "IV.MA9.HXR.semv.sac.20.50.synt"} ] }'
 
 Output:
 WriteStream3: output_data is {'GroundMotion': {'stream': 'IV.MA9..HHR.START.OTLOC.SAC.20.50.real', 'ty': 'velocity', 'p_norm': 'max', 'pgd': '0.0006945877', 'pgv': '0.0002320527', 'pga': '0.00013708159', 'dmp_spec_acc': '0.00032428280150622804'}}
