@@ -191,7 +191,7 @@ class WriteGeoJSON(ConsumerPE):
         stream_r, ty_r, pgm_r = matching_data['real']
         stream_s, ty_s, pgm_s = matching_data['synth']
         sac = stream_r[0].stats.sac
-        coordinates = [sac.stla, sac.stlo]
+        coordinates = [sac.stla.item(), sac.stlo.item()]
         for param in pgm_r:
             if param == 'p_norm':
                 continue
@@ -214,9 +214,10 @@ class WriteGeoJSON(ConsumerPE):
                 }
             }
         }
-        self.log("output_data is %s" % output_data)
-        # filename="GroundMotion"+"_"+os.path.basename(filename)+".json"
-        # json.dump(output_data, outfile)
+        # self.log("output_data is %s" % json.dumps(output_data))
+        filename = "./{}_{}.json".format(station, p_norm)
+        with open(filename, 'w') as outfile:
+            json.dump(output_data, outfile)
 
 
 streamProducerReal=StreamProducer('real')
