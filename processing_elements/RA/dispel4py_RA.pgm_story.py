@@ -94,8 +94,12 @@ class PeakGroundMotion(IterativePE):
         stream, filename = s_data
         data_mean, data_max, d = norm(stream)
         delta = stream[0].stats.delta
+        freq  = 0.3
+        damp  = 0.1
         pgd_mean, pgv_mean, pga_mean = calculate_pgm(data_mean, self.ty, delta)
         pgd_max, pgv_max, pga_max = calculate_pgm(data_max, self.ty, delta)
+        dmp_spec_acc_mean = calculate_damped_spectral_acc(data_mean, delta, freq, damp, self.ty)
+        dmp_spec_acc_max = calculate_damped_spectral_acc(data_max, delta, freq, damp, self.ty)
 
         self.write('output', [filename, stream, self.ty, {
             'pgd_mean': pgd_mean.item(),
@@ -103,46 +107,35 @@ class PeakGroundMotion(IterativePE):
             'pga_mean': pga_mean.item(),
             'pgd_max': pgd_max.item(),
             'pgv_max': pgv_max.item(),
-            'pga_max': pga_max.item()
+            'pga_max': pga_max.item(),
+            'dmp_spec_acc_mean': dmp_spec_acc_mean,
+            'dmp_spec_acc_max': dmp_spec_acc_max
             }]
         )
 
-class DampedSpectralAcc(IterativePE):
-    def __init__(self, freq, damp):
-        IterativePE.__init__(self)
-        self.freq=freq
-        self.damp=damp
+def calculate_damped_spectral_acc(data,delta,freq,damp,ty):
 
-    def _process(self, data):
-        filename,stream,ty,pgm_data=data
+    samp_rate = 1.0 / delta
+    t = freq * 1.0
+    d = damp
+    omega = (2 * math.pi * t) ** 2
 
-        for t in stream:
-            tr = t.copy()
-            delta = tr.stats.delta
+    paz_sa = corn_freq_2_paz(t, damp=d)
+    paz_sa['sensitivity'] = omega
+    paz_sa['zeros'] = []
 
-            samp_rate = 1.0 / delta
-            t = self.freq * 1.0
-            d = self.damp
-            omega = (2 * math.pi * t) ** 2
+    if ty == 'displacement':
+        data = np.gradient(data, delta)
+        data = np.gradient(data, delta)
+    elif ty == 'velocity':
+        data = np.gradient(data, delta)
 
-            paz_sa = corn_freq_2_paz(t, damp=d)
-            paz_sa['sensitivity'] = omega
-            paz_sa['zeros'] = []
+    data = simulate_seismometer(data, samp_rate, paz_remove=None,
+                            paz_simulate=paz_sa, taper=True,
+                            simulate_sensitivity=True, taper_fraction=0.05)
+    dmp_spec_acc = max(abs(data))
 
-            data = tr.data
-            if ty == 'displacement':
-                data = np.gradient(data, delta)
-                data = np.gradient(data, delta)
-            elif ty == 'velocity':
-                data = np.gradient(data, delta)
-
-            data = simulate_seismometer(data, samp_rate, paz_remove=None,
-                                    paz_simulate=paz_sa, taper=True,
-                                    simulate_sensitivity=True, taper_fraction=0.05)
-            dmp_spec_acc = max(abs(data))
-
-        pgm_data['dmp_spec_acc'] = dmp_spec_acc
-        self.write('output', [filename, stream, ty, pgm_data])
+    return dmp_spec_acc
 
 class WriteStream(ConsumerPE):
     def __init__(self):
@@ -166,11 +159,9 @@ class WriteStream(ConsumerPE):
 streamProducer=StreamProducer()
 streamProducer.name='streamProducer'
 pgm=PeakGroundMotion('velocity')
-dsa=DampedSpectralAcc(0.3,0.1)
 write_stream = WriteStream()
 
 
 graph = WorkflowGraph()
 graph.connect(streamProducer, 'output', pgm,'input')
-graph.connect(pgm,'output',dsa,'input')
-graph.connect(dsa,'output',write_stream,'input')
+graph.connect(pgm,'output',write_stream,'input')
