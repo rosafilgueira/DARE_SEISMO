@@ -21,7 +21,7 @@ import numpy as np
 import os
 import json
 
-def norm(stream):
+def calculate_norm(stream):
     station = stream[0].stats.station
     channels = set()
     for tr in stream:
@@ -85,31 +85,41 @@ def calculate_pgm(data, ty, delta):
     return pgd, pgv, pga
 
 
+class NormPE(GenericPE):
+    def __init__(self):
+        GenericPE.__init__(self)
+        self._add_input("input")
+        self._add_output("output_mean")
+        self._add_output("output_max")
+
+    def _process(self, data):
+        stream, filename = data['input']
+        data_mean, data_max, d = calculate_norm(stream)
+        self.write('output_mean', [stream, filename, data_mean, 'mean'])
+        self.write('output_max', [stream, filename, data_max, 'max'])
+
 class PeakGroundMotion(IterativePE):
     def __init__(self,ty):
         IterativePE.__init__(self)
         self.ty=ty
 
     def _process(self, s_data):
-        stream, filename = s_data
-        data_mean, data_max, d = norm(stream)
+        stream, filename, data, p_norm = s_data
         delta = stream[0].stats.delta
-        freq  = 0.3
+        frequencies = (0.3, 1.0, 3.0)
         damp  = 0.1
-        pgd_mean, pgv_mean, pga_mean = calculate_pgm(data_mean, self.ty, delta)
-        pgd_max, pgv_max, pga_max = calculate_pgm(data_max, self.ty, delta)
-        dmp_spec_acc_mean = calculate_damped_spectral_acc(data_mean, delta, freq, damp, self.ty)
-        dmp_spec_acc_max = calculate_damped_spectral_acc(data_max, delta, freq, damp, self.ty)
+        pgd, pgv, pga = calculate_pgm(data, self.ty, delta)
+        dmp_spec_acc = {}
+        for freq in frequencies:
+            dmp = calculate_damped_spectral_acc(data, delta, freq, damp, self.ty)
+            dmp_spec_acc['PSA_{}Hz'.format(freq)] = dmp
 
         self.write('output', [filename, stream, self.ty, {
-            'pgd_mean': pgd_mean.item(),
-            'pgv_mean': pgv_mean.item(),
-            'pga_mean': pga_mean.item(),
-            'pgd_max': pgd_max.item(),
-            'pgv_max': pgv_max.item(),
-            'pga_max': pga_max.item(),
-            'dmp_spec_acc_mean': dmp_spec_acc_mean,
-            'dmp_spec_acc_max': dmp_spec_acc_max
+            'pgd': pgd.item(),
+            'pgv': pgv.item(),
+            'pga': pga.item(),
+            'dmp_spec_acc': dmp_spec_acc,
+            'p_norm': p_norm
             }]
         )
 
@@ -158,10 +168,15 @@ class WriteStream(ConsumerPE):
 
 streamProducer=StreamProducer()
 streamProducer.name='streamProducer'
-pgm=PeakGroundMotion('velocity')
+norm=NormPE()
+pgm_mean=PeakGroundMotion('velocity')
+pgm_max=PeakGroundMotion('velocity')
 write_stream = WriteStream()
 
 
 graph = WorkflowGraph()
-graph.connect(streamProducer, 'output', pgm,'input')
-graph.connect(pgm,'output',write_stream,'input')
+graph.connect(streamProducer, 'output', norm,'input')
+graph.connect(norm, 'output_mean', pgm_mean,'input')
+graph.connect(norm, 'output_max', pgm_max,'input')
+graph.connect(pgm_max,'output',write_stream,'input')
+graph.connect(pgm_mean,'output',write_stream,'input')
