@@ -129,19 +129,19 @@ class NormPE(GenericPE):
 
 
 class PeakGroundMotion(IterativePE):
-    def __init__(self,ty):
+    def __init__(self,ty,freq=(0.3, 1.0, 3.0),damp=0.1):
         IterativePE.__init__(self)
         self.ty=ty
+        self.frequencies = freq
+        self.damp = damp
 
     def _process(self, s_data):
         stream, filename, data, p_norm = s_data
         delta = stream[0].stats.delta
-        frequencies = (0.3, 1.0, 3.0)
-        damp  = 0.1
         pgd, pgv, pga = calculate_pgm(data, self.ty, delta)
         dmp_spec_acc = {}
-        for freq in frequencies:
-            dmp = calculate_damped_spectral_acc(data, delta, freq, damp, self.ty)
+        for freq in self.frequencies:
+            dmp = calculate_damped_spectral_acc(data, delta, freq, self.damp, self.ty)
             dmp_spec_acc['PSA_{}Hz'.format(freq)] = dmp.item()
 
         results = {
@@ -171,6 +171,7 @@ class Match(GenericPE):
         if len(self.store[(station, p_norm)]) >= 2:
             print('output: {} {}'.format(station, p_norm))
             self.write('output', [station, p_norm, self.store[(station, p_norm)]])
+            del self.store[station, p_norm]
 
 
 def comp(real_param, synt_param):
