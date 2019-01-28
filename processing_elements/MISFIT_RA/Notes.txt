@@ -1,0 +1,14 @@
+1. I had to create a function for reading synthetic seismogras in ASCII format to waveform (Stream - Obspy)
+	preprocessing_functions.py --> def read_specfem_ascii_waveform_file(filename,station,network, channel)
+
+2. I had to modify the get_sythetic for adding network, station 
+	create_misfit_preprocess.py --> 
+            synt_stream = get_synthetics(synt_file, 
+                                         get_event_time(quakeml, event_id), station, network)
+
+3. The output of misfit_preprocess generate MSEED files. So, I have to modify the dispel4py_RA.pgm_story.py --> WriteGeoJson()
+        try:
+            sac = stream_r[0].stats.sac
+            coordinates = [sac.stla.item(), sac.stlo.item()]
+        else:
+	    coordinates = []
