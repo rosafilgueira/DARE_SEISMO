@@ -1,0 +1,8 @@
+workflow:
+  class: File
+  path: /Users/rosafilgueira/EPCC/DARE/WP6/test/MISFIT_RA/create_misfit_prep.py
+  secondaryFiles:
+    - class: File
+      location: preprocessing_functions.py
+
+argument_f: /Users/rosafilgueira/EPCC/DARE/WP6/test/MISFIT_RA/misfit_input.jsn
