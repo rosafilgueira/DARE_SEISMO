@@ -1,0 +1,30 @@
+{
+"simulationRunId": "simulation_abruzzo00_1506529014997",
+"runId": "download_abruzzo00_1506529014997_<suffix set at submission time>",
+"nproc": 64,
+"downloadPE": [
+{
+"input": {
+"minimum_interstation_distance_in_m": 100,
+"channel_priorities": [
+"BH[E,N,Z]",
+"EH[E,N,Z]"
+],
+"location_priorities": [
+"",
+"00",
+"10"
+],
+"mseed_path": "./mseed",
+"stationxml_path": "./stationxml",
+"DT": "5e-3",
+"NSTEP": 10000,
+"ORIGIN_TIME": "2016-10-30T06:40:17.360000",
+"minlatitude": 41.1,
+"maxlatitude": 42.9,
+"minlongitude": 12.04,
+"maxlongitude": 14.45
+}
+}
+]
+}
