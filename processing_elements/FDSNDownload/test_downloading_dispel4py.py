@@ -1,6 +1,6 @@
 from dispel4py.base import SimpleFunctionPE
 from dispel4py.workflow_graph import WorkflowGraph
-from dispel4py.seismo.seismo import *
+#from dispel4py.seismo.seismo import *
 import obspy
 from obspy.core import read
 import os
@@ -9,8 +9,9 @@ import pickle
 import xml.etree.ElementTree as ET
 from dispel4py.base import create_iterative_chain, ConsumerPE, IterativePE
 
-from . import RectangularDomain, CircularDomain, Restrictions, DownloadHelper
-from obspy.fdsn.header import URL_MAPPINGS
+from domain import RectangularDomain, CircularDomain 
+from download_helpers import Restrictions, DownloadHelper
+from obspy.clients.fdsn.header import URL_MAPPINGS
 
 
 class WatchDirectory(IterativePE):
@@ -23,8 +24,7 @@ class WatchDirectory(IterativePE):
     def _process(self, inputs):
 
         directory = inputs
-        print
-        "DIRECOTRY: " + str(directory)
+        print("DIRECOTRY:%s " % str(directory))
         for dir_entry in os.listdir(directory[self.index]):
 
             dir_entry_path = os.path.join(directory[self.index], dir_entry)
@@ -88,20 +88,22 @@ def download_data(data):
     solverType = None
     networks=None
     stations=None
-    if data.has_key('solverType'):
+
+    print("----> data is %s" % data)
+    if 'solverType' in data:
         solverType = data['solverType'];
 
-    if data.has_key('networks'):
+    if 'networks' in data:
         networks = data['networks'];
 
-    if data.has_key('stations'):
+    if 'stations' in data:
         stations = data['stations'];
 
     if solverType == "SPECFEM3D_GLOBE":
         endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + (float(data['RECORD_LENGTH_IN_MINUTES']) * 60) + 300
     else:
         endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + float(data['DT']) * int(data['NSTEP']) + 300
-    print solverType
+    print("%s\n" % solverType)
 
     if solverType == "SPECFEM3D_GLOBE" and (float(data['minlongitude']) < -180 or float(data['maxlongitude']) > 180):
         domain = CircularDomain(
@@ -139,8 +141,7 @@ def download_data(data):
         location_priorities=data['location_priorities']
 
     )
-    print
-    "TIME WIND:" + str((str(restrictions.starttime), str(restrictions.endtime)))
+    print("TIME WIND: %s" % str((str(restrictions.starttime), str(restrictions.endtime))))
     dlh = DownloadHelper(providers=["IRIS"]) if solverType == "SPECFEM3D_GLOBE" else DownloadHelper()
 
     mseed_path = os.environ['STAGED_DATA'] + "/" + data['mseed_path']
@@ -199,14 +200,14 @@ graph.connect(watcher_xml, 'output', xmlr, "input")
 
 
 # Store to local path
-ProvenancePE.PROV_PATH = os.environ['PROV_PATH']
-
+#ProvenancePE.PROV_PATH = os.environ['PROV_PATH']
+#
 # Size of the provenance bulk before sent to storage or sensor
-ProvenancePE.BULK_SIZE = 20
-injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE,
-           controlParameters={'username': os.environ['USER_NAME'], 'runId': os.environ['RUN_ID'],
-                              'outputdest': os.environ['STAGED_DATA']})
-
+#ProvenancePE.BULK_SIZE = 20
+#injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE,
+#           controlParameters={'username': os.environ['USER_NAME'], 'runId': os.environ['RUN_ID'],
+#                              'outputdest': os.environ['STAGED_DATA']})
+#
 # for lcoal test with full provenance generation and upload to local repository
 # Store via service
 # ProvenancePE.REPOS_URL='http://127.0.0.1:8082/workflow/insert'
