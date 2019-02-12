@@ -7,6 +7,7 @@ RUN apk --no-cache --update-cache add \
     gfortran \
     git \
     zlib \
+    zlib-dev \
     build-base \
     libgfortran \
     gsl \
@@ -47,7 +48,7 @@ WORKDIR ${HOME}
 RUN git clone --recursive --branch devel https://github.com/geodynamics/specfem3d.git
 RUN cd specfem3d && \
     ./configure FC=gfortran CC=gcc MPIFC=mpif90 --with-mpi && \
-    make xmeshfem3D xgenerate_databases xspecfem3D
+    make xmeshfem3D xgenerate_databases xspecfem3D xdecompose_mesh
 
 EXPOSE 22
 RUN ssh-keygen -A \
