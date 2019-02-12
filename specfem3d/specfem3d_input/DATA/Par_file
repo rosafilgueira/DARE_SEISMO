@@ -59,7 +59,7 @@ NGNOD                           = 8
 MODEL                           = default
 
 # path for external tomographic models files
-TOMOGRAPHY_PATH                 = DATA/velocity/
+TOMOGRAPHY_PATH                 = DATA/velocity_model_Abruzzo/
 # if you are using a SEP model (oil-industry format)
 SEP_MODEL_DIRECTORY             = DATA/my_SEP_model/
 
