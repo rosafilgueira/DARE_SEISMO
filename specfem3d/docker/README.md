@@ -27,7 +27,7 @@ you kill the container):
 docker run <IMAGE_ID>
 ```
 
-Check that the container is running and its ID:
+Check that the container is running and find out the container ID:
 
 ```
 $ docker ps
@@ -36,7 +36,7 @@ CONTAINER ID        IMAGE               COMMAND               CREATED           
 ```
 
 To copy the input files for Specfem3d to the docker container run the following
-from outside the container (you need the ID of the running container):
+from outside the container (you'll need the container ID from above):
 
 ```
 docker cp specfem3d_input <CONTAINER_ID>:/home/mpiuser/
@@ -51,4 +51,12 @@ Run the Specfem3d script:
 ```
 cd specfem
 ./run_test.sh
+```
+
+Exit from the running container by typing `exit` or pressing `Ctrl-D`.
+
+Kill the container:
+
+```
+docker kill <CONTAINER_ID>
 ```
