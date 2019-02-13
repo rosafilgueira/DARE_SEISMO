@@ -4,13 +4,13 @@ Build the Docker container:
 docker build .
 ```
 
-Start a shell on the container:
+Start the container and start a shell:
 
 ```
 docker run -it <IMAGE_ID> /bin/sh
 ```
 
-Test MPI, for example:
+Compile and run the MPI example:
 
 ```
 /home/mpiuser # mpicc mpi_hello_world.c
@@ -20,6 +20,8 @@ Hello world from processor 45af5c75526d, rank 3 out of 4 processors
 Hello world from processor 45af5c75526d, rank 1 out of 4 processors
 Hello world from processor 45af5c75526d, rank 0 out of 4 processors
 ```
+
+Logging out will kill the container (and remove any data or changes you've made).
 
 Run the container in non-interactive mode (this command does not return until
 you kill the container):
@@ -36,7 +38,7 @@ CONTAINER ID        IMAGE               COMMAND               CREATED           
 ```
 
 To copy the input files for Specfem3d to the docker container run the following
-from outside the container (you'll need the container ID from above):
+command from the host machine (you'll need the container ID from above):
 
 ```
 docker cp specfem3d_input <CONTAINER_ID>:/home/mpiuser/
