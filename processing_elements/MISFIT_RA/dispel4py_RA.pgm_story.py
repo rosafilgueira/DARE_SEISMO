@@ -203,7 +203,7 @@ class WriteGeoJSON(ConsumerPE):
             difference[param] = diff
             relative_difference[param] = rel_diff
 
-        output_dir="./"
+        output_dir="./GM/"
         output_data={
             "type": "Feature",
             "properties": {
@@ -220,7 +220,7 @@ class WriteGeoJSON(ConsumerPE):
         }
         # self.log("output_data is %s" % json.dumps(output_data))
         filename = "./{}_{}.json".format(station, p_norm)
-        with open(filename, 'w') as outfile:
+        with open(output_dir+filename, 'w') as outfile:
             json.dump(output_data, outfile)
 
 
