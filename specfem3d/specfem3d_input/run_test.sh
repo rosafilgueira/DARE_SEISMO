@@ -37,7 +37,7 @@ mkdir -p $BASEMPIDIR
 echo
 echo "  decomposing mesh..."
 echo
-./bin/xdecompose_mesh $NPROC ./mesh_Abruzzo $BASEMPIDIR
+./bin/xdecompose_mesh $NPROC ./DATA/mesh_Abruzzo $BASEMPIDIR
 # checks exit code
 if [[ $? -ne 0 ]]; then exit 1; fi
 
