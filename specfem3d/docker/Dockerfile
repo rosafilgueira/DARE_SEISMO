@@ -52,5 +52,7 @@ RUN cd specfem3d && \
     ./configure FC=gfortran CC=gcc MPIFC=mpif90 --with-mpi && \
     make xmeshfem3D xgenerate_databases xspecfem3D xdecompose_mesh
 
+RUN cd ${HOME} && mpicc mpi_hello_world.c
+
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
