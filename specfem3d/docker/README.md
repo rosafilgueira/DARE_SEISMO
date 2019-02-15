@@ -85,15 +85,31 @@ docker swarm init
 docker stack deploy -c docker-compose.yml specfem3d
 ```
 
-Use `docker ps` to see the running containers. Log into the head node to deploy
-the MPI code to all nodes.
+Run `./create_hostfile.sh` to discover the currently running containers and
+write the container IDs into a hostfile. The hostfile is transferred to
+the MPI head node. For example:
 
-For example:
 ```
+$ ./create_hostfile.sh
+f7623ce479dd
+66ec19b1de2d
+e7d04fe28164
+HEAD NODE: e7d04fe28164.
+```
+
+Log into the MPI head node with the container ID from the output above:
+
+```
+docker exec -it <CONTAINER_ID> /bin/sh
+```
+
+Within the container:
+```
+su mpiuser
 mpirun --hostfile hostfile -np 6 a.out
 ```
 
-Shut down the stack:
+Shut down the stack (from the host machine):
 ```
 docker stack rm specfem3d
 ```
