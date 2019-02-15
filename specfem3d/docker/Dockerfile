@@ -29,8 +29,6 @@ ENV HOME /home/${USER}
 
 RUN adduser ${USER} --disabled-password --gecos "" && \
     echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-ADD mpi_hello_world.c ${HOME}/mpi_hello_world.c
-RUN chown -R ${USER}:${USER} ${HOME}/mpi_hello_world.c
 
 ENV SSHDIR ${HOME}/.ssh/
 #ENV SSHDIR /root/.ssh/
@@ -46,13 +44,17 @@ RUN chown ${USER}:${USER} ${SSHDIR}/* \
     && chmod 600 ${SSHDIR}/* \
     && echo 'mpiuser:2q3450anwf54k' | chpasswd
 
+# compile SPECFEM3D
 WORKDIR ${HOME}
 RUN git clone --recursive --branch devel https://github.com/geodynamics/specfem3d.git
 RUN cd specfem3d && \
     ./configure FC=gfortran CC=gcc MPIFC=mpif90 --with-mpi && \
     make xmeshfem3D xgenerate_databases xspecfem3D xdecompose_mesh
 
-RUN cd ${HOME} && mpicc mpi_hello_world.c
+# add MPI hello world and compile
+ADD mpi_hello_world.c ${HOME}/mpi_hello_world.c
+RUN chown -R ${USER}:${USER} ${HOME}/mpi_hello_world.c
+RUN cd ${HOME} && mpicc -o mpi_hello_world mpi_hello_world.c
 
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
