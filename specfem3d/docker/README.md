@@ -85,8 +85,8 @@ docker swarm init
 docker stack deploy -c docker-compose.yml specfem3d
 ```
 
-Run `./create_hostfile.sh` to discover the currently running containers and
-write the container IDs into a hostfile. The hostfile is transferred to
+Run `./create_hostfile.sh` to discover the currently running MPI containers and
+write their IDs into a hostfile. The hostfile is transferred to
 the MPI head node. For example:
 
 ```
@@ -94,7 +94,7 @@ $ ./create_hostfile.sh
 f7623ce479dd
 66ec19b1de2d
 e7d04fe28164
-HEAD NODE: e7d04fe28164.
+HEAD NODE: e7d04fe28164
 ```
 
 Log into the MPI head node with the container ID from the output above:
