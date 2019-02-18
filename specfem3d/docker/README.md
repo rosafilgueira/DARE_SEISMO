@@ -85,10 +85,9 @@ docker swarm init
 docker stack deploy -c docker-compose.yml specfem3d
 ```
 
-**Note:** If you have more than one node you may want to add them all to the swarm
+**Note:** If you have more than one node you may need to add them all to the swarm
 running `docker swarm join` - see https://docs.docker.com/get-started/part4/
 for details.
-{: .note}
 
 Run `./create_hostfile.sh` to discover the currently running MPI containers and
 write their IDs into a hostfile. The hostfile is transferred to
