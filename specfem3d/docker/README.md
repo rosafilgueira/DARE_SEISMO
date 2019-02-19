@@ -101,6 +101,9 @@ e7d04fe28164
 HEAD NODE: e7d04fe28164
 ```
 
+Note that this discovers only the containers running on the host where the
+script is run.
+
 Log into the MPI head node with the container ID from the output above:
 
 ```
