@@ -54,7 +54,7 @@ Paths inside misfit_input.jsn need to be changed. And also it is needed to have 
 
 To run Jupyter using your new environment `mypython3` you have to explicitly install it again 
 into the conda environment 
-(otherwise Jupyter will run in conda root and you'll see something like `ModuleNotFoundError: No module named 'dispel4py'`).
+(otherwise Jupyter will run in conda root and you may see something like `ModuleNotFoundError: No module named 'dispel4py'`).
 
 Install Jupyter as follows:
 ```
