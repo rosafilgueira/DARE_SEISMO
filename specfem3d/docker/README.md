@@ -16,12 +16,13 @@ You can choose any tag name and also specify version.
 Start the container and start a shell:
 
 ```
-docker run -it <IMAGE_ID> /bin/sh
+docker run -it specfem3d_mpi /bin/sh
 ```
 
 Compile and run the MPI example:
 
 ```
+/home/mpiuser # su mpiuser
 /home/mpiuser # mpicc mpi_hello_world.c
 /home/mpiuser # mpirun --allow-run-as-root -n 4 --oversubscribe ./a.out
 Hello world from processor 45af5c75526d, rank 2 out of 4 processors
