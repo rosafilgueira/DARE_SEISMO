@@ -25,6 +25,14 @@ python setup.py install
 cd ..
 ```
 
+**Note:** It is nesssary to reinstall dispel4py if the git repository has changed.
+
+```
+cd dispel4py
+git pull
+python setup.py install
+```
+
 # Clone WP6_EPOS repo 
 
 ```
@@ -42,9 +50,25 @@ Paths inside misfit_input.jsn need to be changed. And also it is needed to have 
 ./run_RA.sh
 ```
 
+# Run Jupyter
+
+To run Jupyter using your new environment `mypython3` you have to explicitly install it again 
+into the conda environment 
+(otherwise Jupyter will run in conda root and you'll see something like `ModuleNotFoundError: No module named 'dispel4py'`).
+
+Install Jupyter as follows:
+```
+conda install jupyter
+```
+and then start a Jupyter notebook server:
+```
+jupyter notebook
+```
+
 # Run (as a test) the misfit workflow using a Notebook (misfit_notebook)
 
-Create a python kernel to work with the conda enviroment and select it later in the Jupyter Notebook browser to run the notebook.
+The other option is to create a python kernel to work with the conda enviroment 
+and select it later in the Jupyter Notebook browser to run the notebook.
 
 ```
 conda install ipykernel
