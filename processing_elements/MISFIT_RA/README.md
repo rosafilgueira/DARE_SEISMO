@@ -42,7 +42,7 @@ Paths inside misfit_input.jsn need to be changed. And also it is needed to have 
 ./run_RA.sh
 ```
 
-# Test the misfit preprocess workflow using a Notebook (misfit_notebook)
+# Run (as a test) the misfit workflow using a Notebook (misfit_notebook)
 
 Create a python kernel to work with the conda enviroment and select it later in the Jupyter Notebook browser to run the notebook.
 
