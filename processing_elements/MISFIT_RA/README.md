@@ -72,5 +72,5 @@ and select it later in the Jupyter Notebook browser to run the notebook.
 
 ```
 conda install ipykernel
-python -m ipykernel install --user --name mypthon3 --display-name mpython3
+python -m ipykernel install --user --name mypthon3 --display-name mypython3
 ```
