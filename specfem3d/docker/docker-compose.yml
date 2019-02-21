@@ -2,14 +2,14 @@ version: "3"
 
 services:
     mpi_head:
-        image: specfem3d_mpi_head:latest
+        image: specfem3d_mpi:latest
         ports:
           - "22"
         networks:
             - mpinet
 
     mpi_node:
-        image: specfem3d_mpi_node:latest
+        image: specfem3d_mpi:latest
         deploy:
             replicas: 2
         networks:
