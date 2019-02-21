@@ -25,7 +25,7 @@ python setup.py install
 cd ..
 ```
 
-**Note:** It is nesssary to reinstall dispel4py if the git repository has changed.
+**Note:** It is necessary to reinstall dispel4py if the git repository has changed.
 
 ```
 cd dispel4py
