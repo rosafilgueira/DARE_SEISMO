@@ -26,20 +26,26 @@ cd ..
 ```
 
 # Clone WP6_EPOS repo 
+
 ```
 git clone https://gitlab.com/project-dare/WP6_EPOS.git
 cd  WP6_EPOS/processing_elements/MISFIT_RA
 ```
 
-# Run dispel4py workflows - you can use the following scripts to simplify the process
-## Note --> you will need to change the paths inside misfit_input.jsn (and have already the misfit input data, which is not in this repo)
+# Run dispel4py workflows
+
+The following scripts to simplify the process of running *create_misfit_prep.py* and  *dispel4py_RA.pgm_story.py* workflows 
+Paths inside misfit_input.jsn need to be changed. And also it is needed to have a copy  of the misfit input data, which is not in this repo.
+
 ```
 ./run_preprocess_misfit.sh
 ./run_RA.sh
 ```
 
 # Test the misfit preprocess workflow using a Notebook (misfit_notebook)
-## create a python kernel to work with your conda enviroment -- later you will need to select this kernel to run the Jupyter Notebook
+
+Create a python kernel to work with the conda enviroment and select it later in the Jupyter Notebook browser to run the notebook.
+
 ```
 conda install ipykernel
 python -m ipykernel install --user --name mypthon3 --display-name mpython3
