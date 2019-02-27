@@ -15,6 +15,10 @@ RUN apk --no-cache --update-cache add \
     openssh
 
 RUN apk --no-cache --update-cache add \
+    -X http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    numactl
+
+RUN apk --no-cache --update-cache add \
     -X http://dl-cdn.alpinelinux.org/alpine/edge/testing \
     openmpi \
     openmpi-dev
