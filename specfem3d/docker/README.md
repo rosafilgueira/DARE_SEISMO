@@ -63,9 +63,18 @@ Then log in to the running container with an interactive shell:
 docker exec -it <CONTAINER_ID> /bin/sh
 ```
 
-Run the Specfem3d script:
+Before running the Specfem3d test, you may have to adjust the number of 
+processes that Specfem3d uses. In the directory `specfem3d_input/DATA` open the
+`Par_file` and change this line:
+
 ```
-cd specfem
+# number of MPI processors
+NPROC                           = 24
+```
+
+Now run the Specfem3d script:
+```
+cd specfem3d_input
 ./run_test.sh
 ```
 
