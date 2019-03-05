@@ -86,6 +86,22 @@ Kill the container:
 docker kill <CONTAINER_ID>
 ```
 
+
+Note: If you see the following error, it is quite possible that the VM/computer enviroment (e.g. laptop) that you are using for running this docker container does not have enough memory.
+
+```
+--------------------------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code. Per user-direction, the job has been aborted.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+mpirun noticed that process rank 0 with PID 0 on node ddb5855235a3 exited on signal 9 (Killed).
+--------------------------------------------------------------------------
+```
+
+Our suggestion, is to test it using the last section described in this section.
+
+
 ## Compose multiple Docker containers as MPI cluster
 
 Create a swarm and deploy the app (see https://docs.docker.com/get-started/part3/):
@@ -159,7 +175,8 @@ cd specfem3d_test_input
 ```
 
 
-Note: This test should take around 6 minutes using 4 cores. 
+Note1 : This test should take around 6 minutes using 4 cores. 
+
 
 
 
