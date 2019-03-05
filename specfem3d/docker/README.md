@@ -87,7 +87,9 @@ docker kill <CONTAINER_ID>
 ```
 
 
-Note: If you see the following error, it is quite possible that the VM/computer enviroment (e.g. laptop) that you are using for running this docker container does not have enough memory for using the Abruzo mesh.
+## Testing the container
+
+**Note:** If you see the following error, it is quite possible that the VM/computer enviroment (e.g. laptop) that you are using for running this docker container does not have enough memory for using the Abruzzo mesh.
 
 ```
 --------------------------------------------------------------------------
@@ -99,7 +101,33 @@ mpirun noticed that process rank 0 with PID 0 on node ddb5855235a3 exited on sig
 --------------------------------------------------------------------------
 ```
 
-Our suggestion, is to test it using the last section described in this section.
+For testing locally (e.g. using your own laptop) this containter, we suggest to use one the specfem3d examples, 
+since the data used by RA (e.g. abruzzo) requires a computer enviroment/VM with large memory. 
+
+One of the examples identified for testing locally the docker is the [homogeneous halfspace](https://github.com/geodynamics/specfem3d/tree/devel/EXAMPLES/homogeneous_halfspace_HEX8_elastic_absorbing_Stacey_5sides), which requires less memory for executing it.
+
+All the necessary input files are available [here](https://gitlab.com/project-dare/WP6_EPOS/tree/master/specfem3d/specfem3d_test_input).
+
+Following the previous description, for running this test, we just need to following these steps:
+
+
+```
+docker cp specfem3d_test_input <CONTAINER_ID>:/home/mpiuser/
+```
+
+Then log in to the running container with an interactive shell:
+```
+docker exec -it <CONTAINER_ID> /bin/sh
+```
+
+Now run the Specfem3d script:
+```
+cd specfem3d_test_input
+./run_test.sh
+```
+
+
+**Note:** This test should take around 6 minutes using 4 cores. 
 
 
 ## Compose multiple Docker containers as MPI cluster
@@ -147,35 +175,6 @@ Shut down the stack (from the host machine):
 docker stack rm specfem3d
 ```
 
-## Testing the container
-
-For testing locally (e.g. using your own laptop) this containter, we suggest to use one the specfem3d examples, 
-since the data used by RA (e.g. abruzzo) requires a computer enviroment/VM with large memory. 
-
-One of the examples identified for testing locally the docker is the [homogeneous halfspace](https://github.com/geodynamics/specfem3d/tree/devel/EXAMPLES/homogeneous_halfspace_HEX8_elastic_absorbing_Stacey_5sides), which requires less memory for executing it.
-
-All the necesary input files are avaiable [here](https://gitlab.com/project-dare/WP6_EPOS/tree/master/specfem3d/specfem3d_test_input).
-
-Following the previous description, for running this test, we just need to following these steps:
-
-
-```
-docker cp specfem3d_test_input <CONTAINER_ID>:/home/mpiuser/
-```
-
-Then log in to the running container with an interactive shell:
-```
-docker exec -it <CONTAINER_ID> /bin/sh
-```
-
-Now run the Specfem3d script:
-```
-cd specfem3d_test_input
-./run_test.sh
-```
-
-
-Note1 : This test should take around 6 minutes using 4 cores. 
 
 
 
