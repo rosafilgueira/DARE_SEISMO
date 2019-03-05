@@ -130,3 +130,18 @@ Shut down the stack (from the host machine):
 ```
 docker stack rm specfem3d
 ```
+
+Testing the container:
+
+For testing locally (e.g. using a laptop) this docker containter, we suggest to use one the specfem3d examples, 
+since the data used by RA (e.g. abruzzo) requires a computer enviroment/VM with large memory. 
+
+One of the examples identified for testing locally the docker is the [homogeneous halfspace] (https://github.com/geodynamics/specfem3d/tree/devel/EXAMPLES/homogeneous_halfspace_HEX8_elastic_absorbing_Stacey_5sides).
+All the necesary input files for running this test are in this [link] (https://gitlab.com/project-dare/WP6_EPOS/tree/master/specfem3d/specfem3d_test_input)
+
+
+Note: This test should take around 6 minutes using 4 cores. 
+
+
+
+
