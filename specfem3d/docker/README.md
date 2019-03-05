@@ -87,7 +87,7 @@ docker kill <CONTAINER_ID>
 ```
 
 
-Note: If you see the following error, it is quite possible that the VM/computer enviroment (e.g. laptop) that you are using for running this docker container does not have enough memory.
+Note: If you see the following error, it is quite possible that the VM/computer enviroment (e.g. laptop) that you are using for running this docker container does not have enough memory for using the Abruzo mesh.
 
 ```
 --------------------------------------------------------------------------
