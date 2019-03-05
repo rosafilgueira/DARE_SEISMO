@@ -78,17 +78,6 @@ cd specfem3d_input
 ./run_test.sh
 ```
 
-Exit from the running container by typing `exit` or pressing `Ctrl-D`.
-
-Kill the container:
-
-```
-docker kill <CONTAINER_ID>
-```
-
-
-## Testing the container
-
 **Note:** If you see the following error, it is quite possible that the VM/computer enviroment (e.g. laptop) that you are using for running this docker container does not have enough memory for using the Abruzzo mesh.
 
 ```
@@ -100,6 +89,19 @@ a non-zero exit code. Per user-direction, the job has been aborted.
 mpirun noticed that process rank 0 with PID 0 on node ddb5855235a3 exited on signal 9 (Killed).
 --------------------------------------------------------------------------
 ```
+
+If this happens you may want to run a smaller SPECFEM3D example as described in the next section.
+
+Exit from the running container by typing `exit` or pressing `Ctrl-D`.
+
+Kill the container:
+
+```
+docker kill <CONTAINER_ID>
+```
+
+
+## Testing the container
 
 For testing locally (e.g. using your own laptop) this containter, we suggest to use one the specfem3d examples, 
 since the data used by RA (e.g. abruzzo) requires a computer enviroment/VM with large memory. 
