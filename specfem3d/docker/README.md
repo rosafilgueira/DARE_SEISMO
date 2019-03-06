@@ -55,7 +55,7 @@ To copy the input files for Specfem3d to the docker container run the following
 command from the host machine (you'll need the container ID from above):
 
 ```
-docker cp specfem3d_input <CONTAINER_ID>:/home/mpiuser/
+docker cp ../specfem3d_input <CONTAINER_ID>:/home/mpiuser/
 ```
 
 Then log in to the running container with an interactive shell:
@@ -114,7 +114,7 @@ Following the previous description, for running this test, we just need to follo
 
 
 ```
-docker cp specfem3d_test_input <CONTAINER_ID>:/home/mpiuser/
+docker cp ../specfem3d_test_input <CONTAINER_ID>:/home/mpiuser/
 ```
 
 Then log in to the running container with an interactive shell:
