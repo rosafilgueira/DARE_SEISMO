@@ -48,7 +48,7 @@ $ docker ps
 CONTAINER ID        IMAGE               COMMAND               CREATED             STATUS              PORTS               NAMES
 38e2ea53744d        e99ef04dc42f        "/usr/sbin/sshd -D"   31 minutes ago      Up 31 minutes       22/tcp              keen_ellis
 ```
-**Note**: This command should be done outside the docker container. Either you open a new terminal, or you detach your current session using (e.g. using [screen](https://www.gnu.org/software/screen/manual/html_node/Invoking-Screen.html) ).
+**Note**: This last command should be typed outside the docker container. Either you open a new terminal, or you detach your current session  (e.g. using [screen](https://www.gnu.org/software/screen/manual/html_node/Invoking-Screen.html) ).
 
 ## SPECFEM3D example
 
