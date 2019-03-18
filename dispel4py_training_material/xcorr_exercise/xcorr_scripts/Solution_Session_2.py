@@ -91,4 +91,4 @@ graph.connect(preprocess_trace, 'output', sta, 'input')
 # Simple command for executing this workflow from a terminal. 
 
 
-# dispel4py simple Solution_Session_2.py -d '{ "streamProducer" : [ {"input": "http://escience8.inf.ed.ac.uk:8080/laquila/SAC/A25A.TA..BHZ.2011.025.00.00.00.000-2011.026.00.00.39.000.rm.scale-AUTO.SAC"}, {"input": "http://escience8.inf.ed.ac.uk:8080/laquila/SAC/BMN.LB..BHZ.2011.025.00.00.00.023-2011.026.00.00.38.998.rm.scale-AUTO.SAC"} ] }'
+# dispel4py simple Solution_Session_2.py -d '{ "streamProducer" : [ {"input": "../A25A.TA..BHZ.2011.025.00.00.00.000-2011.026.00.00.39.000.rm.scale-AUTO.SAC"}, {"input": "../BMN.LB..BHZ.2011.025.00.00.00.023-2011.026.00.00.38.998.rm.scale-AUTO.SAC"} ] }'

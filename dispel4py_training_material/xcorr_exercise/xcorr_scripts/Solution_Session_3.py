@@ -145,7 +145,7 @@ graph.connect(preprocess_trace_2, 'output', match_traces, 'input2')
 graph.connect(match_traces, 'output', xcorrelation_traces, 'input')
 
 
-# dispel4py simple Solution_Session_3.py -d '{ "SP1" : [ { "input" : "http://escience8.inf.ed.ac.uk:8080/laquila/SAC/A25A.TA..BHZ.2011.025.00.00.00.000-2011.026.00.00.39.000.rm.scale-AUTO.SAC" } ], "SP2" : [ { "input" : "http://escience8.inf.ed.ac.uk:8080/laquila/SAC/BMN.LB..BHZ.2011.025.00.00.00.023-2011.026.00.00.38.998.rm.scale-AUTO.SAC"} ] }'
+# dispel4py simple Solution_Session_3.py -d '{ "SP1" : [ { "input" : "../A25A.TA..BHZ.2011.025.00.00.00.000-2011.026.00.00.39.000.rm.scale-AUTO.SAC" } ], "SP2" : [ { "input" : "../BMN.LB..BHZ.2011.025.00.00.00.023-2011.026.00.00.38.998.rm.scale-AUTO.SAC"} ] }'
 
 
 

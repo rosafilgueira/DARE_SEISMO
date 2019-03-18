@@ -127,4 +127,4 @@ graph.connect(detrendPE, 'output', samplingratePE, 'input')
 # Simple command for executing this workflow from a terminal.
 
 
-# dispel4py simple Solution_Session_1.py -d '{ "streamProducer" : [ { "input" : "http://escience8.inf.ed.ac.uk:8080/laquila/20100501-20120930_fseed/TERO/20100101.fseed" } ] }'
+# dispel4py simple Solution_Session_1.py -d '{ "streamProducer" : [ { "input" : "../20100501.fseed" } ] }'
