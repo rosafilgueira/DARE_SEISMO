@@ -15,8 +15,8 @@
 "00",
 "10"
 ],
-"mseed_path": "./mseed",
-"stationxml_path": "./stationxml",
+"mseed_path": "./data",
+"stationxml_path": "./stations",
 "DT": "5e-3",
 "NSTEP": 10000,
 "ORIGIN_TIME": "2016-10-30T06:40:17.360000",
