@@ -1,0 +1,12 @@
+workflow:
+  class: File
+  path: /Users/rosafilgueira/EPCC/DARE/WP6/WP6_EPOS/processing_elements/FDSNDownload/download_FDSN.py
+  secondaryFiles:
+    - class: File
+      location: download_helpers.py
+    - class: File
+      location: domain.py
+    - class: File
+      location: utils.py
+
+argument_f: /Users/rosafilgueira/EPCC/DARE/WP6/WP6_EPOS/processing_elements/FDSNDownload/download_chile.json
