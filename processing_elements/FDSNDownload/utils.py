@@ -26,7 +26,7 @@ import warnings
 
 from obspy.core.util.base import NamedTemporaryFile
 from obspy.clients.fdsn.client import FDSNException
-from obspy.io.mseed.util import getRecordInformation
+from obspy.io.mseed.util import get_record_information
 
 
 # Different types of errors that can happen when downloading data via the
@@ -267,7 +267,7 @@ def filter_stations_based_on_duplicate_id(existing_stations,
     existing_stations = [(_i.network, _i.station) for _i in existing_stations]
     invalid_station_ids = set(existing_stations).union(discarded_station_ids)
 
-    return list(itertools.ifilterfalse(
+    return list(itertools.filterfalse(
         lambda x: (x.network, x.station) in invalid_station_ids,
         new_stations))
 
@@ -356,7 +356,7 @@ def download_and_split_mseed_bulk(client, client_name, starttime, endtime,
                 while True:
                     if fh.tell() >= (file_size - 256):
                         break
-                    info = getRecordInformation(fh)
+                    info = get_record_information(fh)
 
                     position = fh.tell()
                     fh.seek(position + 8, 0)
@@ -668,10 +668,10 @@ def filter_stations(stations, minimum_distance_in_m):
         most_common = collections.Counter(
             itertools.chain.from_iterable(nns)).most_common()[0][0]
         indexes_to_remove.append(most_common)
-        nns = list(itertools.ifilterfalse(lambda x: most_common in x, nns))
+        nns = list(itertools.filterfalse(lambda x: most_common in x, nns))
 
     # Remove these indices.
-    return set([_i[1] for _i in itertools.ifilterfalse(
+    return set([_i[1] for _i in itertools.filterfalse(
                 lambda x: x[0] in indexes_to_remove,
                 enumerate(stations))])
 
@@ -872,8 +872,8 @@ def get_stationxml_filename(str_or_fct, network, station, channels):
 
     if path is None:
         return None
-    elif not isinstance(path, basestring):
-        raise TypeError("'%s' is not a filepath." % str(path))
+    #elif not isinstance(path, basestring):
+    #    raise TypeError("'%s' is not a filepath." % str(path))
     return path
 
 
@@ -904,6 +904,6 @@ def get_mseed_filename(str_or_fct, network, station, location, channel):
                 network=network, station=station, location=location,
                 channel=channel))
 
-    if not isinstance(path, basestring):
-        raise TypeError("'%s' is not a filepath." % str(path))
+    #if not isinstance(path, basestring):
+    #    raise TypeError("'%s' is not a filepath." % str(path))
     return path
