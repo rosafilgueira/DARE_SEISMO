@@ -2,6 +2,7 @@
 
 export PYTHONPATH=$PYTHONPATH:.
 export MISFIT_PREP_CONFIG="processing.json" 
+export OUTPUT="./GM/"
 echo $MISFIT_PREP_CONFIG
 dispel4py simple create_misfit_prep.py -f misfit_input.jsn
 

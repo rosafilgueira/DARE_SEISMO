@@ -7,6 +7,7 @@ requirements:
   EnvVarRequirement:
     envDef:
       PYTHONPATH: $(inputs.script.dirname)
+      OUTPUT: "/Users/rosafilgueira/EPCC/DARE/WP6/WP6_EPOS/processing_elements/MISFIT_RA/GM/"
 
 inputs:
 - id: script
