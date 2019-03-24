@@ -159,21 +159,19 @@ class WatchDirectory(IterativePE):
 
 
 
+downloadPE = SimpleFunctionPE(download_data)
+downloadPE.name = "downloadPE"
+watcher = WatchDirectory(0)
+watcher_xml = WatchDirectory(1)
 waveformr = SimpleFunctionPE(waveform_reader)
 xmlr = SimpleFunctionPE(stationxml_reader)
-downloadPE = SimpleFunctionPE(download_data)
 
 processes = [waveform_reader,
              (plot_stream, {"source": "waveform_reader", "output_dir": "./output-images", "tag": "observed-image"})]
 
 chain = create_iterative_chain(processes, FunctionPE_class=SimpleFunctionPE)
 
-watcher = WatchDirectory(0)
-watcher_xml = WatchDirectory(1)
-downloadPE.name = "downloadPE"
 graph = WorkflowGraph()
-graph.add(downloadPE)
-
 graph.connect(downloadPE, 'output', watcher, "input")
 graph.connect(downloadPE, 'output', watcher_xml, "input")
 graph.connect(watcher, 'output', chain, "input")
