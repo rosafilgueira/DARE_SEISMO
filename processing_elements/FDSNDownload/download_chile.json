@@ -19,7 +19,7 @@
 "stationxml_path": "./stations",
 "DT": "5e-3",
 "NSTEP": 10000,
-"ORIGIN_TIME": "2016-10-30T06:40:17.360000",
+"ORIGIN_TIME": "2013-02-16T21:11:09.290000",
 "minlatitude": 41.1,
 "maxlatitude": 42.9,
 "minlongitude": 12.04,
