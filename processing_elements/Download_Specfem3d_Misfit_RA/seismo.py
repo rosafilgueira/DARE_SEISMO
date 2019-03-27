@@ -78,6 +78,30 @@ class SeismoPE(ProvenanceType):
             return super(SeismoPE, self).extractItemMetadata(data,port)
         
 
+class downloadSeismicData(ProvenanceType):
+    
+    def __init__(self,*args,**kwargs):
+        ProvenanceType.__init__(self,*args,**kwargs)
+        self.addNamespacePrefix("seis","http://seis-prov.eu/ns/#")
+        #self.outputconnections[OUTPUT_DATA][TYPE] = ['timestamp', 'location', 'streams']
+
+        
+    def extractItemMetadata(self,data,port):
+         
+        try:
+            
+            #metadic
+            streammeta=list()
+            
+            #metadic={"location":data};
+            #streammeta.append(metadic)
+            #self.log(str(os.path.realpath(data[1])))
+            self.prov_location=[os.path.realpath(data[0]),os.path.realpath(data[1])]
+            return streammeta 
+        except Exception:
+            self.log("Applying default metadata extraction")
+            #self.error=self.error+"Extract Metadata error: "+str(traceback.format_exc())
+            return super(downloadSeismicData, self).extractItemMetadata(data,port)
         
 class PlotPE(ProvenanceType):
     
@@ -98,8 +122,8 @@ class PlotPE(ProvenanceType):
             
             #metadic={"location":data};
             #streammeta.append(metadic)
-            #self.log(str(data[1))
-            self.prov_location=data[1]
+            #self.log(str(os.path.realpath(data[1])))
+            self.prov_location=os.path.realpath(data[1])
             return streammeta 
         except Exception:
             self.log("Applying default metadata extraction")
