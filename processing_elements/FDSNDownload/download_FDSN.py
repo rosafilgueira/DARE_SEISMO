@@ -73,9 +73,11 @@ def download_data(data):
         stations = data['stations'];
 
     if solverType == "SPECFEM3D_GLOBE":
-        endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + (float(data['RECORD_LENGTH_IN_MINUTES']) * 60) + 300
+        #endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + (float(data['RECORD_LENGTH_IN_MINUTES']) * 60) + 300
+        endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + (float(data['RECORD_LENGTH_IN_MINUTES']) * 60) + 600   #fm
     else:
-        endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + float(data['DT']) * int(data['NSTEP']) + 300
+        #endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + float(data['DT']) * int(data['NSTEP']) + 300
+        endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + float(data['DT']) * int(data['NSTEP']) + 600   #fm
     print("%s\n" % solverType)
 
     if solverType == "SPECFEM3D_GLOBE" and (float(data['minlongitude']) < -180 or float(data['maxlongitude']) > 180):
@@ -94,7 +96,7 @@ def download_data(data):
 
     restrictions = Restrictions(
         # Get data for a whole yearlatitude.
-        starttime=obspy.UTCDateTime(data['ORIGIN_TIME']) - 300,
+        starttime=obspy.UTCDateTime(data['ORIGIN_TIME']) - 300,   
         endtime=endtime,
         # Considering the enormous amount of data associated with continuous
         # requests, you might want to limit the data based on SEED identifiers.
