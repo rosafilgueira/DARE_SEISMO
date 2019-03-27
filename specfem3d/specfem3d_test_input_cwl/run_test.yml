@@ -1,0 +1,12 @@
+script_environment:
+  class: File
+  path: env_preparation.sh
+script_decompose:
+  class: File
+  path: decompose.sh
+script_database_gen:
+  class: File
+  path: database_generation.sh
+script_simulation:
+  class: File
+  path: simulation.sh
