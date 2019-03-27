@@ -3,8 +3,9 @@
 mkdir -p ./misfit_data
 rm -r ./misfit_data/data
 rm -r ./misfit_data/stations
-rm -r ./mifit_data/ouput
-rm -r ./mifit_data/ouput-images
+rm -r ./misfit_data/output
+rm -r ./misfit_data/output-images
+mkdir ./misfit_data/output
 
 rm -rf ./GM
 mkdir -p ./GM
