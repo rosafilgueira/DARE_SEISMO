@@ -1,0 +1,16 @@
+####################################
+# using pyproj to convert coordinates
+
+import pyproj
+
+# Define some common projections using EPSG codes ref. http://spatialreference.org
+wgs84=pyproj.Proj("+init=EPSG:4326") # LatLon with WGS84 datum used by GPS units and Google Earth
+meshcoordinate=pyproj.Proj("+init=EPSG:32633") # UTM coords, zone 33N, WGS84 datum
+
+cx,cy=pyproj.transform(wgs84, meshcoordinate, x, y) #from geo wgs84 to meshcoordinate, x is lon, y is lat (they could be an array)
+
+####################################
+# reading/writing CMTSOLUTION using obspy
+import obspy
+cat = obspy.read_events("/path/to/CMTSOLUTION")
+cat.write("example.xml", format="QUAKEML")
