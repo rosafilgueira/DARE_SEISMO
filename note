@@ -12,5 +12,11 @@ cx,cy=pyproj.transform(wgs84, meshcoordinate, x, y) #from geo wgs84 to meshcoord
 ####################################
 # reading/writing CMTSOLUTION using obspy
 import obspy
+
+# from CMTSOLUTION to QUAKEML
 cat = obspy.read_events("/path/to/CMTSOLUTION")
 cat.write("example.xml", format="QUAKEML")
+
+# from QUAKEML to CMTSOLUTION
+at = obspy.read_events("example.xml")
+at.write("CMTSOLUTION_w", format="CMTSOLUTION")
