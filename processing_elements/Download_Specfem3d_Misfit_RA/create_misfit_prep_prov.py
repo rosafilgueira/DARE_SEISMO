@@ -123,8 +123,15 @@ class MisfitPreprocessingFunctionPE(IterativePE):
     def _process(self, data):
         stream, metadata = data
         result = self.compute_fn(stream, **self.params)
-        return result, metadata
-
+        
+        if isinstance(result, dict) and '_d4p_prov' in result:
+            if isinstance(self, (ProvenanceType)):
+                result['_d4p_data']=result['_d4p_data'],metadata
+                return result
+            else:
+                return result['_d4p_data'], metadata
+        else:
+            return result, metadata
 
 def create_processing_chain(proc):
     processes = []
