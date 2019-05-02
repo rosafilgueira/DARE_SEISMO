@@ -1,0 +1,25 @@
+script_environment:
+  class: File
+  path: env_preparation.sh
+observed_workflow:
+  class: File
+  path: /Users/rosafilgueira/WP6_EPOS/processing_elements/Download_Specfem3d_Misfit_RA/download_FDSN.py
+  secondaryFiles:
+    - class: File
+      location: download_helpers.py
+    - class: File
+      location: domain.py
+    - class: File
+      location: utils.py
+observed_argument_f: /Users/rosafilgueira/WP6_EPOS/processing_elements/Download_Specfem3d_Misfit_RA/download_chile.json
+preprocess_workflow:
+  class: File
+  path: /Users/rosafilgueira/WP6_EPOS/processing_elements/Download_Specfem3d_Misfit_RA/create_misfit_prep.py
+  secondaryFiles:
+    - class: File
+      location: preprocessing_functions.py
+preprocess_argument_f: /Users/rosafilgueira/WP6_EPOS/processing_elements/Download_Specfem3d_Misfit_RA/misfit_input.jsn
+ra_workflow:
+  class: File
+  path: /Users/rosafilgueira/WP6_EPOS/processing_elements/Download_Specfem3d_Misfit_RA/dispel4py_RA.pgm_story.py
+ra_argument_d: '{"streamProducerReal": [ {"input": "/Users/rosafilgueira/WP6_EPOS/processing_elements/Download_Specfem3d_Misfit_RA/misfit_data/output/IV.ARRO.EHR.data"} ], "streamProducerSynth": [ {"input": "/Users/rosafilgueira/WP6_EPOS/processing_elements/Download_Specfem3d_Misfit_RA/misfit_data/output/IV.ARRO.HXR.synth"} ]}'

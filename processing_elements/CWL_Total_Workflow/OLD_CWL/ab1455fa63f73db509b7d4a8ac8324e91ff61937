@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "/anaconda3/envs/mypython3/bin/dispel4py", line 11, in <module>
+    load_entry_point('dispel4py==1.3.0', 'console_scripts', 'dispel4py')()
+  File "/anaconda3/envs/mypython3/lib/python3.7/site-packages/dispel4py-1.3.0-py3.7.egg/dispel4py/new/processor.py", line 808, in main
+    errormsg = process(graph, inputs=inputs, args=args)
+  File "/anaconda3/envs/mypython3/lib/python3.7/site-packages/dispel4py-1.3.0-py3.7.egg/dispel4py/new/simple_process.py", line 146, in process
+    results = process_and_return(workflow, inputs, resultmappings)
+  File "/anaconda3/envs/mypython3/lib/python3.7/site-packages/dispel4py-1.3.0-py3.7.egg/dispel4py/new/simple_process.py", line 116, in process_and_return
+    wrapper.process()
+  File "/anaconda3/envs/mypython3/lib/python3.7/site-packages/dispel4py-1.3.0-py3.7.egg/dispel4py/new/processor.py", line 118, in process
+    outputs = self.pe.process(inputs)
+  File "/anaconda3/envs/mypython3/lib/python3.7/site-packages/dispel4py-1.3.0-py3.7.egg/dispel4py/core.py", line 252, in process
+    return self._process(inputs)
+  File "/anaconda3/envs/mypython3/lib/python3.7/site-packages/dispel4py-1.3.0-py3.7.egg/dispel4py/new/processor.py", line 633, in _process
+    _process_data(pe, data)
+  File "/anaconda3/envs/mypython3/lib/python3.7/site-packages/dispel4py-1.3.0-py3.7.egg/dispel4py/new/processor.py", line 651, in _process_data
+    result = pe.process(data)
+  File "/private/var/folders/cq/hrn42fwj0l3fvqh9n887k7lm0000gn/T/tmpvkj1k2b4/stg6d52f312-15be-416e-b6ae-fe4e7ddb032a/create_misfit_prep.py", line 55, in process
+    event_id=event_id)
+  File "/private/var/folders/cq/hrn42fwj0l3fvqh9n887k7lm0000gn/T/tmpvkj1k2b4/stg6d52f312-15be-416e-b6ae-fe4e7ddb032a/preprocessing_functions.py", line 79, in read_stream
+    stream = obspy.read(data_files)
+  File "</anaconda3/envs/mypython3/lib/python3.7/site-packages/decorator.py:decorator-gen-699>", line 2, in read
+  File "/anaconda3/envs/mypython3/lib/python3.7/site-packages/obspy/core/util/decorator.py", line 301, in _map_example_filename
+    return func(*args, **kwargs)
+  File "/anaconda3/envs/mypython3/lib/python3.7/site-packages/obspy/core/stream.py", line 239, in read
+    raise Exception("No file matching file pattern: %s" % pathname)
+Exception: No file matching file pattern: ./misfit_data/data/IV.ARRO..?H?.mseed

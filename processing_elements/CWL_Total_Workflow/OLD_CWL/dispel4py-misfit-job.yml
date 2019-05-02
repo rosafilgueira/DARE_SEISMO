@@ -1,0 +1,8 @@
+workflow:
+  class: File
+  path: /Users/rosafilgueira/WP6_EPOS/processing_elements/Download_Specfem3d_Misfit_RA/create_misfit_prep.py
+  secondaryFiles:
+    - class: File
+      location: preprocessing_functions.py
+
+argument_f: /Users/rosafilgueira/WP6_EPOS/processing_elements/Download_Specfem3d_Misfit_RA/misfit_input.jsn

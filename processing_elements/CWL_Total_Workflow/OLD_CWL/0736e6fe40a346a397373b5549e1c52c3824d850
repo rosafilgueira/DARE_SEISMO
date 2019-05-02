@@ -1,0 +1,9 @@
+Inputs: {'data12': [{'input': {'data_dir': 'data', 'synt_dir': 'synth', 'events': 'events_simulation_CI_CI_test_0_1507128030823', 'event_id': 'smi:webservices.ingv.it/fdsnws/event/1/query?eventId=1744261', 'stations_dir': 'stations', 'output_dir': 'output', 'network': ['IV'], 'station': ['ARRO']}}]}
+channel is HXE
+channel is HXN
+channel is HXZ
+13.5697 41.7143
+13.5697 41.7143
+SimplePE: Processed 1 iteration.
+Outputs: {}
+ELAPSED TIME: 0.41807007789611816
