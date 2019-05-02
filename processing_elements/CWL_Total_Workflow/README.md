@@ -1,4 +1,4 @@
-# CWL Workflow for the Rapid Assesment
+# CWL Workflow for the Rapid Assesment Use Case
 
 For installing CWL, we recommend to follow these steps: https://github.com/common-workflow-language/cwltool 
 
