@@ -11,7 +11,7 @@ You need to modify the following files for indicating your local installation
  - dispel4py-misfit.cwl --> change the path of the STAGED_DATA variable 
  - dispel4py-RA-pgm_story.cwl --> change the path of the OUTPUT variable
 
-## Running the cwl workflow
+## Running the RA cwl workflow 
 
 For running cwl workflow just type the following command:
 
