@@ -21,7 +21,7 @@ For running cwl workflow just type the following command:
 # Description of CWL workflows:
    run_total.cwl runs the full RA use case, calling each of the following cwl workflows
  
-   	- env_prepration.cwl: it creates the necesasry enviroment (directories) for the RA use case 
+   	- env_prepration.cwl: it creates the necesary enviroment (directories) for the RA use case 
    	- dispel4py-download.cwl: it runs the dispel4py workflow (download_FDSN.py) for getting real/observed data
    	- dispel4py-misfit.cwl: it runs the dispel4py workflow (create_misfit_prep.py) for getting the pre-processed synth and observed data
    	- dispel4py-RA_pgm_story.cwl: it runs the dispel4py workflow (dispel4py_RA.pgm_story.py) for getting ground motion parameters and comparing them 
