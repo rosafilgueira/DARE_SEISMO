@@ -5,10 +5,10 @@ For installing CWL, we recommend to follow these steps: https://github.com/commo
 ## Modify first the path of the input data and dispel4py workflows
 You need to modify the following files
  - run_total.yml --> Modify all the paths that appears in this file to indicate yours
- - dispel4py-RA-pgm_story.cwl --> change the path of the STAGED_DATA variable to indicate yours	
+ - env_preparation.cwl --> change the path of the STAGED_DATA variable to indicate yours
  - dispel4py-download.cwl --> change the path of the STAGED_DATA variable to indicate yours
  - dispel4py-misfit.cwl --> change the path of the STAGED_DATA variable to indicate yours
- - env_preparation.cwl --> change the path of the STAGED_DATA variable to indicate yours
+ - dispel4py-RA-pgm_story.cwl --> change the path of the STAGED_DATA variable to indicate yours	
 
 ## Running the cwl workflow
 
@@ -20,9 +20,9 @@ For running cwl workflow just:
 # Description of CWL workflows:
   - We have run_total.cwl, which runs the full RA use case, calling each cwl workflow: 
    - env_prepration.cwl: it creates the enviroment (directories)
-   - dispel4py-download.cwl: it runs the dispel4py workflow (download_FDSN.py) for downloading real/observed data
-   - dispel4py-misfit.cwl: it runs dispel4py workflow (create_misfit_prep.py) for running misfit preprocess
-   - dispel4py-RA_pgm_story.cwl: it runs dispel4py workflow for calculating RA (dispel4py_RA.pgm_story.py) 
+   - dispel4py-download.cwl: it runs the dispel4py workflow (download_FDSN.py) for getting real/observed data
+   - dispel4py-misfit.cwl: it runs dispel4py workflow (create_misfit_prep.py) for getting the pre-processed synth and observed data
+   - dispel4py-RA_pgm_story.cwl: it runs dispel4py workflow (dispel4py_RA.pgm_story.py) for getting ground motion parameters and comparing them 
 
 # Results
   - Downloaded data at misfit/data
