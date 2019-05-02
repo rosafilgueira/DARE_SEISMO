@@ -26,7 +26,7 @@ For running cwl workflow just type the following command:
    	- dispel4py-misfit.cwl: it runs dispel4py workflow (create_misfit_prep.py) for getting the pre-processed synth and observed data
    	- dispel4py-RA_pgm_story.cwl: it runs dispel4py workflow (dispel4py_RA.pgm_story.py) for getting ground motion parameters and comparing them 
    
-   run_total.yml has the descriptions of all the inputs (dispel4py workflows and input data/arguments), which is used by run_total.cwl, and passed along to each of the other workflows
+   run_total.yml has the descriptions of all the inputs (dispel4py workflows and input data/arguments), which are used by run_total.cwl, and passed along to each of the other cwl workflows
 
 # Results
   - Downloaded data at misfit/data
