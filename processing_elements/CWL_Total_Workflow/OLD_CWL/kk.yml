@@ -1,3 +1,0 @@
-script_environment:
-  class: File
-  path: env_preparation.sh
