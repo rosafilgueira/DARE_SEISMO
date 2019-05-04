@@ -1,0 +1,27 @@
+create_env_script:
+    class: File
+    path: create_env.sh
+    secondaryFiles:
+      - class: File
+        location: processing.json
+create_files_script:
+    class: File
+    path: download_data.sh
+    secondaryFiles:
+      - class: Directory
+        location: download_data
+preprocess_workflow:
+  class: File
+  path: create_misfit_prep.py
+  secondaryFiles:
+    - class: File
+      location: preprocessing_functions.py
+    - class: File
+      location: misfit_input.jsn
+preprocess_argument_f:
+    class: File
+    path: misfit_input.jsn
+ra_workflow:
+  class: File
+  path: dispel4py_RA.pgm_story.py
+ra_argument_d: '{"streamProducerReal": [ {"input": "output/IV.ARRO.EHR.data"} ], "streamProducerSynth": [ {"input": "output/IV.ARRO.HXR.synth"} ]}'

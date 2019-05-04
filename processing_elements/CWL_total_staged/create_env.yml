@@ -1,0 +1,3 @@
+script:
+    class: File
+    path: create_env.sh
