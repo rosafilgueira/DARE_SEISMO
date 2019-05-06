@@ -1,6 +1,9 @@
 script_environment:
   class: File
   path: env_preparation.sh
+  secondaryFiles:
+    - class: Directory
+      location: DATA
 script_decompose:
   class: File
   path: decompose.sh
