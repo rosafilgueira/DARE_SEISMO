@@ -5,7 +5,6 @@ stages the `misfit_data` input and output directory between workflow steps
 instead of re-using an external directory with an absolute path name,
 so that the workflow can be run on any platform without changes.
 
-For installing CWL:
 
 For installing CWL, we recommend to follow these [steps](https://github.com/common-workflow-language/cwltool) 
 
