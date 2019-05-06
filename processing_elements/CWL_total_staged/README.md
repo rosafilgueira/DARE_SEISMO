@@ -7,7 +7,7 @@ so that the workflow can be run on any platform without changes.
 
 For installing CWL:
 
-For installing CWL, we recommend to follow these [steps] (https://github.com/common-workflow-language/cwltool)
+For installing CWL, we recommend to follow these [steps](https://github.com/common-workflow-language/cwltool) 
 
 To run the workflow:
 ```
