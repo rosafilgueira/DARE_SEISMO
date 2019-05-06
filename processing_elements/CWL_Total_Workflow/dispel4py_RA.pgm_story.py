@@ -110,7 +110,7 @@ class StreamProducer(IterativePE):
         self.label = label
 
     def _process(self, input):
-        filename = input
+        filename =  input
         self.write('output', [read(filename), self.label])
 
 

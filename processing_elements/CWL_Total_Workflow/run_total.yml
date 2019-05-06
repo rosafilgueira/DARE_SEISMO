@@ -23,3 +23,4 @@ ra_workflow:
   class: File
   path: /Users/rosafilgueira/WP6_EPOS/processing_elements/CWL_Total_Workflow/dispel4py_RA.pgm_story.py
 ra_argument_d: '{"streamProducerReal": [ {"input": "/Users/rosafilgueira/WP6_EPOS/processing_elements/CWL_Total_Workflow/misfit_data/output/IV.ARRO.EHR.data"} ], "streamProducerSynth": [ {"input": "/Users/rosafilgueira/WP6_EPOS/processing_elements/CWL_Total_Workflow/misfit_data/output/IV.ARRO.HXR.synth"} ]}'
+
