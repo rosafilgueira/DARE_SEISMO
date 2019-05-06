@@ -1,17 +1,21 @@
 #!/usr/bin/env cwl-runner
 cwlVersion: v1.0
 class: CommandLineTool
-baseCommand: [sh]
+requirements:
+  EnvVarRequirement:
+    envDef:
+      STAGED_DATA: $(runtime.outdir)
+      INPUT_DIR: $(inputs.script.dirname)
 
+baseCommand: [sh]
 inputs:
-- id: script
-  type: File 
-  inputBinding:
-     position: 1 
+    script:
+      type: File
+      inputBinding:
+        position: 0
 
 outputs:
-  nproc:
-    type: File
+  output:
+    type: Directory
     outputBinding:
-      glob: nproc.txt
-
+        glob: "OUTPUT_FILES"
