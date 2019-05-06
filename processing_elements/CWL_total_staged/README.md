@@ -1,20 +1,18 @@
-# CWL Workflow for the Rapid Assessment Use Case
+# CWL Workflow for the Rapid Assessment (RA) Use Case
 
-This is a modification of
-[processing_elements/CWL_Total_Workflow](processing_elements/CWL_Total_Workflow)
-to stage the `misfit_data` input and output directory between workflow steps
+This is the CWL implementation for the RA use case, which 
+stages the `misfit_data` input and output directory between workflow steps
 instead of re-using an external directory with an absolute path name,
 so that the workflow can be run on any platform without changes.
+
+For installing CWL:
+
+For installing CWL, we recommend to follow these [steps] (https://github.com/common-workflow-language/cwltool)
 
 To run the workflow:
 ```
 cwltool run_total.cwl run_total.yml
 ```
-
-This workflow mocks the download phase (saving time for testing purposes) by 
-copying the observed data files from the local directory 
-[download_data](download_data).
-Next step is to include the proper download dispel4py script.
 
 The outputs are gathered in the local directories `misfit_data` and `GM`.
 These directories are created by the cwltool when the final result files are 
