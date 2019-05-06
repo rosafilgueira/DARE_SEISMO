@@ -5,7 +5,8 @@ class: Workflow
 
 inputs:
    create_env_script: File
-   create_files_script: File
+   download_workflow: File
+   download_argument_f: File
    preprocess_workflow: File
    preprocess_argument_f: File
    ra_workflow: File
@@ -24,9 +25,10 @@ steps:
       script: create_env_script
     out: [output]
   download_data:
-    run: download_data.cwl
+    run: dispel4py_download.cwl
     in:
-      script: create_files_script
+      workflow:  download_workflow
+      argument_f: download_argument_f
       misfit_data: create_env/output
     out: [output]
   preprocess_data:
