@@ -9,28 +9,37 @@ echo "   setting up example..."
 echo
 
 # cleans output files
-mkdir -p OUTPUT_FILES
-rm -rf OUTPUT_FILES/*
+mkdir -p $STAGED_DATA/OUTPUT_FILES
+rm -rf $STAGED_DATA/OUTPUT_FILES/*
 
 # links executables
-mkdir -p bin
-cd bin/
-rm -f *
-ln -s ../../specfem3d/bin/xdecompose_mesh
-ln -s ../../specfem3d/bin/xgenerate_databases
-ln -s ../../specfem3d/bin/xspecfem3D
-cd ../
+mkdir -p $STAGED_DATA/bin
+rm -rf $STAGED_DATA/bin/*
+
+cd $STAGED_DATA/bin/
+parentdir="$(dirname "$INPUT_DIR")"
+
+ln -s $parentdir/specfem3d/bin/xdecompose_mesh
+ln -s $parentdir/specfem3d/bin/xgenerate_databases
+ln -s $parentdir/specfem3d/bin/xspecfem3D
+
+cd $STAGED_DATA
 
 # stores setup
-cp DATA/Par_file OUTPUT_FILES/
-cp DATA/CMTSOLUTION OUTPUT_FILES/
-cp DATA/STATIONS OUTPUT_FILES/
-
+cp $INPUT_DIR/DATA/Par_file $STAGED_DATA/OUTPUT_FILES/.
+cp $INPUT_DIR/DATA/CMTSOLUTION $STAGED_DATA/OUTPUT_FILES/.
+cp $INPUT_DIR/DATA/STATIONS $STAGED_DATA/OUTPUT_FILES/.
+                            
 # get the number of processors, ignoring comments in the Par_file
-NPROC=`grep ^NPROC DATA/Par_file | grep -v -E '^[[:space:]]*#' | cut -d = -f 2`
-echo $NPROC > nproc.txt
+NPROC=`grep ^NPROC $INPUT_DIR/DATA/Par_file | grep -v -E '^[[:space:]]*#' | cut -d = -f 2`
+echo $NPROC > $STAGED_DATA/nproc.txt
 
-BASEMPIDIR=`grep ^LOCAL_PATH DATA/Par_file | cut -d = -f 2 `
+
+#BASEMPIDIR=`grep ^LOCAL_PATH DATA/Par_file | cut -d = -f 2 `
+#echo $BASEMPIDIR
+#mkdir -p $BASEMPIDIR
+
+
+BASEMPIDIR=`grep ^LOCAL_PATH $INPUT_DIR/DATA/Par_file | cut -d = -f 2 `
 echo $BASEMPIDIR
-mkdir -p $BASEMPIDIR
-
+mkdir -p $STAGED_DATA/$BASEMPIDIR
