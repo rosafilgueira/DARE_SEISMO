@@ -58,6 +58,7 @@ pip install cwl-runner
 cwl-runner run_test.cwl run_test.yml
 ```
 
+At the end of the execution of the cwl workflow, you will find a results directory in /home/mpiuser, which has all the results stored. 
 
 
 
