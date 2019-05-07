@@ -30,8 +30,9 @@ CONTAINER ID        IMAGE               COMMAND               CREATED           
 **Note**: This last command should be typed outside the docker container. Either you open a new terminal, or you detach your current session  (e.g. using [screen](https://www.gnu.org/software/screen/manual/html_node/Invoking-Screen.html) ).
 
 
-# Copy the necessary input files and CWL to the container
+# Copy the necessary input and CWL files into the container
 
+```
 docker cp ../specfem3d_test_input <CONTAINER_ID>:/home/mpiuser/
 docker cp ../specfem3d_test_input_cwl/* <CONTAINER_ID>:/home/mpiuser/
 ```
