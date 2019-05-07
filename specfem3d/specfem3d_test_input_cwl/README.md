@@ -1,6 +1,9 @@
 # CWL Workflow for SPECFEM3D 
 
-This is the CWL implementation SPECFEM3D using the test_input  specfem3d_test_input
+This is the CWL implementation SPECFEM3D using the [specfem3d docker container](https://gitlab.com/project-dare/WP6_EPOS/tree/master/specfem3d/docker) and the [test_input data](https://gitlab.com/project-dare/WP6_EPOS/tree/master/specfem3d/specfem3d_input_test)
+
+
+test_input  specfem3d_test_input
 
 ## Starting the specfem3d container using the test_input 
 
