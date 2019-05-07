@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 set -x
 echo "running example: `date`"
 currentdir=`pwd`
@@ -27,7 +27,10 @@ NPROC=`grep ^NPROC $INPUT_DIR/specfem3d_test_input/DATA/Par_file | grep -v -E '^
 
 BASEMP=`grep ^LOCAL_PATH $INPUT_DIR/specfem3d_test_input/DATA/Par_file | cut -d = -f 2 `
 BASEMPIDIR="$(echo -e "${BASEMP}" | sed -e 's/^[[:space:]]*//')"
-echo $BASEMPDIR
+
+echo $BASEMPIDIR > $STAGED_DATA/results/BASEMPIDIR.txt
+echo $NPROC > $STAGED_DATA/results/nproc.txt
+
 mkdir -p $STAGED_DATA/results/$BASEMPIDIR
 
 # decomposes mesh using the pre-saved mesh files in MESH-default
@@ -35,7 +38,4 @@ echo
 echo "  decomposing mesh..."
 echo
 
-
-cd $STAGED_DATA/results
-./bin/xdecompose_mesh $NPROC ./DATA/mesh_homogeneous $BASEMPIDIR
 
