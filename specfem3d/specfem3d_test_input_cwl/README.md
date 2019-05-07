@@ -20,7 +20,7 @@ docker run -it specfem3d_mpi /bin/sh
 
 ```
 
-# Check that the container is running and find out the container ID:
+# Container ID
 
 ```
 $ docker ps
@@ -29,6 +29,8 @@ CONTAINER ID        IMAGE               COMMAND               CREATED           
 ```
 **Note**: This last command should be typed outside the docker container. Either you open a new terminal, or you detach your current session  (e.g. using [screen](https://www.gnu.org/software/screen/manual/html_node/Invoking-Screen.html) ).
 
+
+# Copy the necessary input files and CWL to the container
 
 docker cp ../specfem3d_test_input <CONTAINER_ID>:/home/mpiuser/
 docker cp ../specfem3d_test_input_cwl/* <CONTAINER_ID>:/home/mpiuser/
@@ -39,7 +41,7 @@ Then log in to the running container with an interactive shell:
 docker exec -it <CONTAINER_ID> /bin/sh
 ```
 
-Install CWL:
+# Install CWL:
 
 apk update && apk upgrade && pip install -U pip
 apk add --update alpine-sdk make gcc python3-dev python-dev libxslt-dev libxml2-dev libc-dev openssl-dev libffi-dev zlib-dev py-pip openssh rm -rf /var/cache/apk/*
@@ -48,7 +50,7 @@ pip install cwltool
 pip install cwl-runner
 
 
-Now run the CWL Specfem3d:
+# Run the CWL Specfem3d:
 ```
 cwl-runner run_test.cwl run_test.yml
 ```
