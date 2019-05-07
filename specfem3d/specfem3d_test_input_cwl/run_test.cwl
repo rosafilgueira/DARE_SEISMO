@@ -1,5 +1,4 @@
 #!/usr/bin/env cwl-runner
-
 cwlVersion: v1.0
 class: Workflow
 
@@ -8,8 +7,10 @@ inputs:
    script_decompose: File
    script_database: File
    script_simulation: File
-outputs: []
-
+outputs:
+    results:
+        type: Directory
+        outputSource: simulation/output
 steps:
   create_environment:
     run: env_preparation.cwl
