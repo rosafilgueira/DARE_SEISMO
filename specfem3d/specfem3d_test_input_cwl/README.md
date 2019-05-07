@@ -1,11 +1,9 @@
 # CWL Workflow for SPECFEM3D 
 
-This is the CWL implementation SPECFEM3D using the [specfem3d docker container](https://gitlab.com/project-dare/WP6_EPOS/tree/master/specfem3d/docker) and the [test_input data](https://gitlab.com/project-dare/WP6_EPOS/tree/master/specfem3d/specfem3d_input_test)
-
-
-test_input  specfem3d_test_input
+This is the CWL implementation SPECFEM3D using the [specfem3d docker container](https://gitlab.com/project-dare/WP6_EPOS/tree/master/specfem3d/docker) and the [test_input data](https://gitlab.com/project-dare/WP6_EPOS/tree/master/specfem3d/specfem3d_test_input)
 
 ## Starting the specfem3d container using the test_input 
+Detailed instructions about how to build and run the are [here](https://gitlab.com/project-dare/WP6_EPOS/tree/master/specfem3d/docker).
 
 ## Build
 
@@ -63,6 +61,7 @@ cwl-runner run_test.cwl run_test.yml
 
 At the end of the execution of the cwl workflow, you will find a results directory in /home/mpiuser, which has all the results stored. 
 
+![Results](results.png?raw=true "Results Scheen Shot")
 
 
 
