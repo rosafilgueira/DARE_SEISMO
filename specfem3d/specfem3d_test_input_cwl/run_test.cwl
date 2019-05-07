@@ -3,10 +3,10 @@
 cwlVersion: v1.0
 class: Workflow
 
-inputs: 
+inputs:
    script_environment: File
    script_decompose: File
-   script_database_gen: File
+   script_database: File
    script_simulation: File
 outputs: []
 
@@ -15,26 +15,24 @@ steps:
     run: env_preparation.cwl
     in:
       script: script_environment
-    out: [nproc]
- 
-  decompose:
-    run: decompose.cwl
+    out: [output]
+  decompose_mesh:
+    run: decompose_mesh.cwl
     in:
       script: script_decompose
-      prev: create_environment/nproc
-      
-    out: [output] 
-  database_gen:
-    run: database_gen.cwl
+      results: create_environment/output
+    out: [output]
+
+  database_generation:
+    run: database_generation.cwl
     in:
-      script: script_database_gen
-      nproc: create_environment/nproc
-      prev: decompose/output
-    out: [output] 
+      script: script_database
+      results: decompose_mesh/output
+    out: [output]
+
   simulation:
     run: simulation.cwl
     in:
       script: script_simulation
-      nproc: create_environment/nproc
-      prev: database_gen/output
-    out: [] 
+      results: database_generation/output
+    out: [output]

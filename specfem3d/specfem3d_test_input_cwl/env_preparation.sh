@@ -1,5 +1,5 @@
-#!/bin/bash
-
+!/bin/bash
+set -x
 echo "running example: `date`"
 currentdir=`pwd`
 
@@ -9,37 +9,33 @@ echo "   setting up example..."
 echo
 
 # cleans output files
-mkdir -p $STAGED_DATA/OUTPUT_FILES
-rm -rf $STAGED_DATA/OUTPUT_FILES/*
+mkdir -p $STAGED_DATA/results/OUTPUT_FILES
+rm -rf $STAGED_DATA/results/OUTPUT_FILES/*
 
 # links executables
-mkdir -p $STAGED_DATA/bin
-rm -rf $STAGED_DATA/bin/*
-
-cd $STAGED_DATA/bin/
-parentdir="$(dirname "$INPUT_DIR")"
-
-ln -s $parentdir/specfem3d/bin/xdecompose_mesh
-ln -s $parentdir/specfem3d/bin/xgenerate_databases
-ln -s $parentdir/specfem3d/bin/xspecfem3D
-
-cd $STAGED_DATA
 
 # stores setup
-cp $INPUT_DIR/DATA/Par_file $STAGED_DATA/OUTPUT_FILES/.
-cp $INPUT_DIR/DATA/CMTSOLUTION $STAGED_DATA/OUTPUT_FILES/.
-cp $INPUT_DIR/DATA/STATIONS $STAGED_DATA/OUTPUT_FILES/.
-                            
+cp -r $INPUT_DIR/specfem3d_test_input/DATA $STAGED_DATA/results/.
+
+mkdir -p $STAGED_DATA/results/bin
+ln -s  $SPECFEM3D_HOME/bin/* $STAGED_DATA/results/bin/.
+
+echo "!!!!!!!" $currentdir
+
 # get the number of processors, ignoring comments in the Par_file
-NPROC=`grep ^NPROC $INPUT_DIR/DATA/Par_file | grep -v -E '^[[:space:]]*#' | cut -d = -f 2`
-echo $NPROC > $STAGED_DATA/nproc.txt
+NPROC=`grep ^NPROC $INPUT_DIR/specfem3d_test_input/DATA/Par_file | grep -v -E '^[[:space:]]*#' | cut -d = -f 2`
+
+BASEMP=`grep ^LOCAL_PATH $INPUT_DIR/specfem3d_test_input/DATA/Par_file | cut -d = -f 2 `
+BASEMPIDIR="$(echo -e "${BASEMP}" | sed -e 's/^[[:space:]]*//')"
+echo $BASEMPDIR
+mkdir -p $STAGED_DATA/results/$BASEMPIDIR
+
+# decomposes mesh using the pre-saved mesh files in MESH-default
+echo
+echo "  decomposing mesh..."
+echo
 
 
-#BASEMPIDIR=`grep ^LOCAL_PATH DATA/Par_file | cut -d = -f 2 `
-#echo $BASEMPIDIR
-#mkdir -p $BASEMPIDIR
+cd $STAGED_DATA/results
+./bin/xdecompose_mesh $NPROC ./DATA/mesh_homogeneous $BASEMPIDIR
 
-
-BASEMPIDIR=`grep ^LOCAL_PATH $INPUT_DIR/DATA/Par_file | cut -d = -f 2 `
-echo $BASEMPIDIR
-mkdir -p $STAGED_DATA/$BASEMPIDIR

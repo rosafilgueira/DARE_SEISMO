@@ -6,7 +6,6 @@ requirements:
     envDef:
       STAGED_DATA: $(runtime.outdir)
       INPUT_DIR: $(inputs.script.dirname)
-      SPECFEM3D_HOME: "/home/mpiuser/specfem3d"
 
 baseCommand: [sh]
 inputs:
@@ -19,4 +18,4 @@ outputs:
   output:
     type: Directory
     outputBinding:
-        glob: "results"
+        glob: "OUTPUT_FILES"

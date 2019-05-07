@@ -3,13 +3,23 @@ script_environment:
   path: env_preparation.sh
   secondaryFiles:
     - class: Directory
-      location: DATA
+      location: specfem3d_test_input
+    - class: Directory
+      location: results
+
 script_decompose:
   class: File
-  path: decompose.sh
-script_database_gen:
+  path: decompose_mesh.sh
+
+
+script_database:
   class: File
   path: database_generation.sh
+
 script_simulation:
   class: File
   path: simulation.sh
+~
+
+~
+
