@@ -20,8 +20,6 @@ cp -r $INPUT_DIR/specfem3d_test_input/DATA $STAGED_DATA/results/.
 mkdir -p $STAGED_DATA/results/bin
 ln -s  $SPECFEM3D_HOME/bin/* $STAGED_DATA/results/bin/.
 
-echo "!!!!!!!" $currentdir
-
 # get the number of processors, ignoring comments in the Par_file
 NPROC=`grep ^NPROC $INPUT_DIR/specfem3d_test_input/DATA/Par_file | grep -v -E '^[[:space:]]*#' | cut -d = -f 2`
 
@@ -32,10 +30,5 @@ echo $BASEMPIDIR > $STAGED_DATA/results/BASEMPIDIR.txt
 echo $NPROC > $STAGED_DATA/results/nproc.txt
 
 mkdir -p $STAGED_DATA/results/$BASEMPIDIR
-
-# decomposes mesh using the pre-saved mesh files in MESH-default
-echo
-echo "  decomposing mesh..."
-echo
 
 
