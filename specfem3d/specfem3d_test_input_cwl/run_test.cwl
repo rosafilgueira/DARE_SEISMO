@@ -1,4 +1,5 @@
 #!/usr/bin/env cwl-runner
+  
 cwlVersion: v1.0
 class: Workflow
 
@@ -37,3 +38,4 @@ steps:
       script: script_simulation
       results: database_generation/output
     out: [output]
+

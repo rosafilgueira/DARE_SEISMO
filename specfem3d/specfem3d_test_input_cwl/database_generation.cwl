@@ -25,3 +25,4 @@ outputs:
     type: Directory
     outputBinding:
         glob: "results"
+

@@ -1,12 +1,14 @@
 #!/bin/bash
-# runs database generation
+set -x 
 
-filename=$1
-while read line; do
-NPROC=$line
-done < $filename
+cd $STAGED_DATA/results 
+input="nproc.txt"
+NPROC=$(head -n 1 $input)
 
-echo "!!! Reading NPROC" $NPROC
+input=BASEMPIDIR.txt
+BASEMPIDIR=$(head -n 1 $input)
+
+echo $NPROC $BASEMPIDIR
 
 if [ "$NPROC" -eq 1 ]; then
   # This is a serial simulation

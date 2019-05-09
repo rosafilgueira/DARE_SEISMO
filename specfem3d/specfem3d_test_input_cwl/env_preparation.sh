@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+set -x 
 echo "running example: `date`"
 currentdir=`pwd`
 

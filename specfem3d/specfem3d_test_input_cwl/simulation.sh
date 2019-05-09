@@ -1,7 +1,7 @@
 #!/bin/bash
-set -x
+set -x 
 
-cd $STAGED_DATA/results
+cd $STAGED_DATA/results 
 input="nproc.txt"
 NPROC=$(head -n 1 $input)
 

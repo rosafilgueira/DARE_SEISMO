@@ -9,7 +9,6 @@ script_decompose:
   class: File
   path: decompose_mesh.sh
 
-
 script_database:
   class: File
   path: database_generation.sh
@@ -17,7 +16,3 @@ script_database:
 script_simulation:
   class: File
   path: simulation.sh
-~
-
-~
-
