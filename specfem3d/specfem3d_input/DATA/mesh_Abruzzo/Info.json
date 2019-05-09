@@ -1,0 +1,18 @@
+{
+  "SUPPRESS_UTM_PROJECTION": ".true.",
+  "DT": "5e-3",
+  "MODEL": "default",
+  "Coordinatesystem": {
+    "EPSG": "EPSG:32633",
+    "latitude_min": "41.10",
+    "latitude_max": "42.90",
+    "longitude_min": "12.04",
+    "longitude_max": "14.45",
+    "y_min": "4550009.18192",
+    "y_max": "4753961.35732",
+    "x_min": "251420.888333",
+    "x_max": "454281.316507",
+    "z_min": "-60000",
+    "z_max": "2792.539492"
+  }
+}
