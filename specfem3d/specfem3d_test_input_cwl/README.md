@@ -35,7 +35,7 @@ CONTAINER ID        IMAGE               COMMAND               CREATED           
 
 ```
 docker cp ../specfem3d_test_input <CONTAINER_ID>:/home/mpiuser/
-docker cp ../specfem3d_test_input_cwl/* <CONTAINER_ID>:/home/mpiuser/
+docker cp ../specfem3d_test_input_cwl <CONTAINER_ID>:/home/mpiuser/
 ```
 
 Then log in to the running container with an interactive shell:
@@ -45,20 +45,36 @@ docker exec -it <CONTAINER_ID> /bin/sh
 
 # Install CWL:
 
+Inside the container install CWL
+
 ```
-apk update && apk upgrade && pip install -U pip
 apk add --update alpine-sdk make gcc python3-dev python-dev libxslt-dev libxml2-dev libc-dev openssl-dev libffi-dev zlib-dev py-pip openssh rm -rf /var/cache/apk/*
 apk add linux-headers
 pip install cwltool
 pip install cwl-runner
 ```
 
-
 # Run the CWL Specfem3d:
+
+First, you need to copy all the scripts specfem3d_test_input_cwl to your $HOME path ( in this case /home/mpiuser).
+
+```
+cp  specfem3d_test_input_cwl/* .
+```
+
+Note: The env_preparation.cwl script asumes that specfem3d installation is in the $HOME (/home/mpiuser/).
+You migh need to change this script in case that is not the case. 
+
+SPECFEM3D_HOME: "/home/mpiuser/specfem3d"
+
+And now run the CWL workflow from your $HOME (/home/mpiuser/)
+
 ```
 cwl-runner run_test.cwl run_test.yml
+
 ```
 
+Note: it also works if you use cwltool. 
 At the end of the execution of the cwl workflow, you will find a results directory in /home/mpiuser, which has all the results stored. 
 
 ![Results](results.png?raw=true "Results Scheen Shot")
