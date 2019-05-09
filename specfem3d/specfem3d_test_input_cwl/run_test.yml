@@ -4,8 +4,6 @@ script_environment:
   secondaryFiles:
     - class: Directory
       location: specfem3d_test_input
-    - class: Directory
-      location: results
 
 script_decompose:
   class: File
