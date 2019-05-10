@@ -62,10 +62,11 @@ First, you need to copy all the scripts specfem3d_test_input_cwl to your $HOME p
 cp  specfem3d_test_input_cwl/* .
 ```
 
-Note: The env_preparation.cwl script asumes that specfem3d installation is in the $HOME (/home/mpiuser/).
-You migh need to change this script in case that is not the case. 
+!!! Note: The env_preparation.cwl script asumes that specfem3d installation is in the $HOME (/home/mpiuser/).
+You might need to change this script in case that is not the case. 
 
-SPECFEM3D_HOME: "/home/mpiuser/specfem3d"
+**SPECFEM3D_HOME: "/home/mpiuser/specfem3d"**
+
 
 And now run the CWL workflow from your $HOME (/home/mpiuser/)
 
