@@ -166,7 +166,7 @@ class WriteJSON(ConsumerPE):
         }
         output_dir = os.environ['OUTPUT']
         filename = "{}/data_file.json".format(output_dir)
-        with open("data_file.json", "w") as write_file:
+        with open(filename, "w") as write_file:
             json.dump(d, write_file)
 
 
