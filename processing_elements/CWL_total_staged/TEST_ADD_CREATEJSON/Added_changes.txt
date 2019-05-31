@@ -1,0 +1,2 @@
+Preliminary changes.
+The download of waveforms still does not work if we add the intermediate step of creating the json input for download. More tests are required.
