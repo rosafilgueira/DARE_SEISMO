@@ -1,3 +1,8 @@
+fmagnoni
+Preliminary changes.
+The download of waveforms still does not work if we add the intermediate step of creating the json input for download. More tests are required.
+
+
 # CWL Workflow for the Rapid Assessment (RA) Use Case
 
 This is the CWL implementation for the RA use case, which 
