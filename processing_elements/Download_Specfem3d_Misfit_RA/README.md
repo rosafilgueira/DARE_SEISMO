@@ -67,3 +67,32 @@ in the subdirectory misfit_data/
 - subfolder data/ containing the observed seismograms for each station and component in mseed format
 - subfolder output-images/ containing a png figure for each observed seismogram
 - subfolder stations/ containing an xml file for each considered station
+
+
+4. Pre-process observed and synthetic seismograms:  
+this workflow applies typical seismological pre-processing functions to observed and synthetic seismograms.  
+`dispel4py simple create_misfit_prep.py -f misfit_input.jsn`
+
+Input:  
+- json file containing the list of stations whose seismograms should be processed [misfit_input.jsn](misfit_input.jsn)  
+(uploaded by the user)
+- json file containing the set up of the parameters for preprocessing  
+[processing.json](processing.json)  
+(uploaded by the user)
+- In the subdirectory misfit_data/ :  
+   * quakeml file describing the earthquake parameters in input to the preprocessing   
+  [events_simulation_CI_CI_test_0_1507128030823](misfit_data/events_simulation_CI_CI_test_0_1507128030823)  
+(uploaded by the user)
+   * subfolder synth/ containing the synthetic seismograms non processed and in sac format  
+(calculated from the specfem3d simulation or uploaded by the user)  
+[misfit_data/synth/](misfit_data/synth/)
+   * subfolder data/ containing the observed seismograms non processed and in mseed format  
+(obtained from the download workflow)  
+    `misfit_data/data/`
+   * subfolder stations/ containing the xml file station  
+    `misfit_data/stations/`
+
+Output:
+in the subdirectory misfit_data/ :
+- subfolder output/ with the processed seismograms for each station, each component and both observed and synthetic waveforms  
+  `misfit_data/output/`
