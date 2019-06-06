@@ -50,5 +50,20 @@ https://gitlab.com/project-dare/WP6_EPOS/blob/master/processing_elements/CWL_tot
 (uploaded by the user)
 
 Output:  
-json file that will be the input of the download workflow [download_test.json]download_test.json)  
+json file that will be the input of the download workflow [download_test.json](download_test.json)  
 the file is created in the main dir where the workflow runs
+
+
+3. Get observed data:  
+this workflow downloads through FDSN webservice the observed seismograms and stations xml files  
+`dispel4py simple download_FDSN.py -f download_test.json`
+
+Input:  
+[download_test.json](download_test.json)  
+(from the previous step or uploaded by the user)
+
+Output:  
+in the subdirectory misfit_data/
+- subfolder data/ containing the observed seismograms for each station and component in mseed format
+- subfolder output-images/ containing a png figure for each observed seismogram
+- subfolder stations/ containing an xml file for each considered station
