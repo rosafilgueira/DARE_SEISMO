@@ -96,3 +96,28 @@ Output:
 in the subdirectory misfit_data/ :
 - subfolder output/ with the processed seismograms for each station, each component and both observed and synthetic waveforms  
   `misfit_data/output/`
+
+
+5. Get ground motion parameters and compare them:  
+
+```
+searchpath="./misfit_data/output/"
+dispel4py simple dispel4py_RA.pgm_story.py -d '{"streamProducerReal": [ {"input":"'$searchpath'" } ], "streamProducerSynth": [ {"input": "'$searchpath'"} ]}'
+```
+
+Input:  
+-
+
+Output:  
+-
+
+
+6. Plot the PGM map  
+
+`dispel4py simple dispel4py_RAmapping.py`
+
+Input:  
+- 
+
+Output:  
+-
