@@ -1,6 +1,6 @@
-**RA workflow in dispel4py**
+# RA workflow in dispel4py
 
-Run:
+To run the complete workflow:
 
 ```
 ./run_total_combined.sh 
@@ -25,7 +25,7 @@ To these input should be added:
 So far this file is in:  
 https://gitlab.com/project-dare/WP6_EPOS/blob/master/processing_elements/CWL_total_staged/TEST_ADD_CREATEJSON/data.zip
 
-**Description of the workflow steps**  
+## Description of the workflow steps
 
 1. Run a specfem3d simulation:  
 this step reads the info about the earthquake, the stations, the mesh and velocity model and calculates the synthetic seismograms
