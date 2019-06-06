@@ -1,5 +1,0 @@
-script:
-  class: File
-  path: /Users/rosafilgueira/EPCC/DARE/WP6/WP6_EPOS/processing_elements/Download_Specfem3d_Misfit_RA/dispel4py_RA.pgm_story.py
-
-input: '{"streamProducerReal": [ {"input": "/Users/rosafilgueira/EPCC/DARE/WP6/WP6_EPOS/processing_elements/Download_Specfem3d_Misfit_RA/misfit_data/output/IV.ARRO.EHR.data"} ], "streamProducerSynth": [ {"input": "/Users/rosafilgueira/EPCC/DARE/WP6/WP6_EPOS/processing_elements/Download_Specfem3d_Misfit_RA/misfit_data/output/IV.ARRO.HXR.synth"} ]}'
