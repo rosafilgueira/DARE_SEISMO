@@ -24,3 +24,15 @@ To these input should be added:
 * data.zip --> zip containing the input files used for the specfem3d simulation and needed to produce input file of the download step; the zip file should be uploaded by the user and should contain a folder like https://gitlab.com/project-dare/WP6_EPOS/tree/master/processing_elements/CWL_total_staged/TEST_ADD_CREATEJSON/SPECFEMDATA  
 So far this file is in:  
 https://gitlab.com/project-dare/WP6_EPOS/blob/master/processing_elements/CWL_total_staged/TEST_ADD_CREATEJSON/data.zip
+
+**Description of the workflow steps**  
+
+1. Run a specfem3d simulation:  
+this step reads the info about the earthquake, the stations, the mesh and velocity model and calculates the synthetic seismograms
+
+Input:  
+zip of the folder containing the input parameter files of specfem3d https://gitlab.com/project-dare/WP6_EPOS/blob/master/processing_elements/CWL_total_staged/TEST_ADD_CREATEJSON/data.zip   
+(uploaded by the user)
+
+Output:  
+synthetic seismograms in ascii format stored in a directory called OUTPUT_FILES/
