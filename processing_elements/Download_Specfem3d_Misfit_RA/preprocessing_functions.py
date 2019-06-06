@@ -30,6 +30,15 @@ def read_specfem_ascii_waveform_file(filename,station,network, channel):
     return obspy.Stream(traces=[tr])
 
 
+def complete_trace(filename,st):
+     name=filename.split('/')[-1]
+     st[0].stats.network=name.split(".")[0]
+     st[0].stats.station=name.split(".")[1]
+     st[0].stats.channel=name.split(".")[2]
+     return st
+
+
+
 def get_event_time(event, event_id):
     """
     Extract origin time from event XML file.
@@ -40,6 +49,7 @@ def get_event_time(event, event_id):
     return origin.time
 
 def get_synthetics(synts, event_time, station, network):
+    print("Network is %s" %network)
     if isinstance(synts, list):
         file_names = synts
     else:
@@ -47,7 +57,12 @@ def get_synthetics(synts, event_time, station, network):
     st = obspy.Stream()
     for name in file_names:
        try:
-           st += obspy.read(name)
+           #st += obspy.read(name)
+            st_1 = obspy.read(name)
+            if st_1[0].stats.channel=="":
+                st += complete_trace(name,st_1)
+            else:
+                st+= st_1
        except:
           channel_1=name.split(network)[1]
           channel=channel_1.split(".")[2]
@@ -59,7 +74,8 @@ def get_synthetics(synts, event_time, station, network):
         for tr in st:
             offset = tr.stats.starttime - obspy.UTCDateTime(0)
             tr.stats.starttime = event_time + offset
-
+    print("Stats of the first trace!!\n:")
+    print(st[0].stats)
     return st
 
 
@@ -76,10 +92,12 @@ def read_event(event_file, event_id):
 
 
 def read_stream(data_files, sxml, event_file, event_id):
+    print("!! DataFile is %s" % data_files)
     stream = obspy.read(data_files)
     stations = obspy.read_inventory(sxml, format="STATIONXML")
     stream.attach_response(stations)
     event = read_event(event_file, event_id)
+    print(stream[0].stats.response)
     return stream, stations, event
 
 
@@ -174,6 +192,7 @@ def rotate_data(stream, stations, event):
     """
     Rotates the data to ZRT.
     """
+    print("stream is %s"%stream)
     n = stream.select(component='N')
     e = stream.select(component='E')
 

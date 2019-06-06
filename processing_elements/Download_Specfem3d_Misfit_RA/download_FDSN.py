@@ -52,7 +52,7 @@ def plot_stream(stream, output_dir, source, tag):
 
 
 # Rectangular domain containing parts of southern Germany.
-def download_data(data):
+def download_data(data,add_end,add_start):    #fm
     # A fix for globe to access the data values if the whole data gets assigned to the property input
     if 'input' in data:
         data = data['input']
@@ -72,12 +72,7 @@ def download_data(data):
     if 'stations' in data:
         stations = data['stations'];
 
-    if solverType == "SPECFEM3D_GLOBE":
-        #endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + (float(data['RECORD_LENGTH_IN_MINUTES']) * 60) + 300
-        endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + (float(data['RECORD_LENGTH_IN_MINUTES']) * 60) + 600   #fm
-    else:
-        #endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + float(data['DT']) * int(data['NSTEP']) + 300
-        endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + float(data['DT']) * int(data['NSTEP']) + 600   #fm
+    endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + (float(data['RECORD_LENGTH_IN_MINUTES']) * 60) + add_end   #fm
     print("%s\n" % solverType)
 
     if solverType == "SPECFEM3D_GLOBE" and (float(data['minlongitude']) < -180 or float(data['maxlongitude']) > 180):
@@ -96,7 +91,7 @@ def download_data(data):
 
     restrictions = Restrictions(
         # Get data for a whole yearlatitude.
-        starttime=obspy.UTCDateTime(data['ORIGIN_TIME']) - 300,   
+        starttime=obspy.UTCDateTime(data['ORIGIN_TIME']) - add_start,     #fm   
         endtime=endtime,
         # Considering the enormous amount of data associated with continuous
         # requests, you might want to limit the data based on SEED identifiers.
@@ -161,7 +156,7 @@ class WatchDirectory(IterativePE):
 
 
 
-downloadPE = SimpleFunctionPE(download_data)
+downloadPE = SimpleFunctionPE(download_data,{"add_end": 300, "add_start": 300})    #fm
 downloadPE.name = "downloadPE"
 watcher = WatchDirectory(0)
 watcher_xml = WatchDirectory(1)

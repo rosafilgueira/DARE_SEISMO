@@ -2,11 +2,17 @@ import json
 import random
 import os
 import matplotlib.pyplot as plt 
-from mpl_toolkits.basemap import Basemap
+try:
+    from mpl_toolkits.basemap import Basemap
+except:
+    import os
+    os.environ['PROJ_LIB']="/Users/fmagnoni/anaconda3/share/proj"
+    from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from dispel4py.core import GenericPE
 from dispel4py.base import ConsumerPE
 from dispel4py.workflow_graph import WorkflowGraph
+
 
 def plot_single(f,ax,variable='PGV',kind='data',source=None,bounds=None,xtitle=None,ytitle=None,vmin=None,vmax=None):
     lon= [x['properties']['geometry']['coordinates'][0]for x in source["features"]]
@@ -28,9 +34,8 @@ def plot_single(f,ax,variable='PGV',kind='data',source=None,bounds=None,xtitle=N
     if vmin is None:
         vmin=min(values)
     if vmax is None:
-        vmax=min(values)
-        
-    m = Basemap(projection='merc', resolution='c',
+        vmax=max(values)
+    m = Basemap(projection='merc', resolution='l',
             llcrnrlat=minlat, urcrnrlat=maxlat,
             llcrnrlon=minlon, urcrnrlon=maxlon)
     x,y=m(lon,lat)
@@ -48,6 +53,11 @@ def plot_single(f,ax,variable='PGV',kind='data',source=None,bounds=None,xtitle=N
     divider = make_axes_locatable(a)
     cax = divider.append_axes('right', size='5%', pad=0.05)
     f.colorbar(scat, cax=cax, orientation='vertical')
+    
+def get_values_extremes(source=None,kind='data',variable='PGV'):
+    values=[x['properties'][kind][variable] for x in source["features"]]
+    return min(values),max(values)
+    
 
 
 
@@ -74,8 +84,11 @@ class StreamProducer(GenericPE):
                      data_max["features"].append(data_station)
              else:
                  with open(gm_path+"/"+filename, "r") as read_file:
-                     data_station = json.load(read_file)
-                     data_mean["features"].append(data_station)
+                     try:
+                         data_station = json.load(read_file)
+                         data_mean["features"].append(data_station)
+                     except:
+                         print('error loading ',gm_path+"/"+filename)
          self.write('output_mean', data_mean)
          self.write('output_max', data_max)
 
@@ -90,16 +103,44 @@ class PlotMap(ConsumerPE):
         fig, axes = plt.subplots(6, 3, sharex='col', sharey='row')
         fig.set_size_inches([10,20])
         variables=['data', 'synt', 'difference']
+        vmin_data,vmax_data=get_values_extremes(data_source,kind='data',variable='PGV')
+        vmin_synt,vmax_synt=get_values_extremes(data_source,kind='synt',variable='PGV')
+        PGV_min=min(vmin_data,vmin_synt)
+        PGV_max=max(vmax_data,vmax_synt)
+        vmin_data,vmax_data=get_values_extremes(data_source,kind='data',variable='PGA')
+        vmin_synt,vmax_synt=get_values_extremes(data_source,kind='synt',variable='PGA')
+        PGA_min=min(vmin_data,vmin_synt)
+        PGA_max=max(vmax_data,vmax_synt)
+        vmin_data,vmax_data=get_values_extremes(data_source,kind='data',variable='PGD')
+        vmin_synt,vmax_synt=get_values_extremes(data_source,kind='synt',variable='PGD')
+        PGD_min=min(vmin_data,vmin_synt)
+        PGD_max=max(vmax_data,vmax_synt)
+        vmin_data,vmax_data=get_values_extremes(data_source,kind='data',variable='PSA_0.3Hz')
+        vmin_synt,vmax_synt=get_values_extremes(data_source,kind='synt',variable='PSA_0.3Hz')
+        PSA_03Hz_min=min(vmin_data,vmin_synt)
+        PSA_03Hz_max=max(vmax_data,vmax_synt)
+        vmin_data,vmax_data=get_values_extremes(data_source,kind='data',variable='PSA_1.0Hz')
+        vmin_synt,vmax_synt=get_values_extremes(data_source,kind='synt',variable='PSA_1.0Hz')
+        PSA_1Hz_min=min(vmin_data,vmin_synt)
+        PSA_1Hz_max=max(vmax_data,vmax_synt)
+        vmin_data,vmax_data=get_values_extremes(data_source,kind='data',variable='PSA_3.0Hz')
+        vmin_synt,vmax_synt=get_values_extremes(data_source,kind='synt',variable='PSA_3.0Hz')
+        PSA_3Hz_min=min(vmin_data,vmin_synt)
+        PSA_3Hz_max=max(vmax_data,vmax_synt)
+        
+        
+        
+        
         i =0
         for k in variables:
             ax=axes[:,i]
             print("k is %s" %k)
-            plot_single(fig, ax[0] ,'PGA',k,source=data_source,xtitle=k,ytitle='PGA',vmin=0,vmax=17)
-            plot_single(fig, ax[1] ,'PGV',k,source=data_source,xtitle=None,  ytitle='PGV',vmin=0,vmax=1.2)
-            plot_single(fig, ax[2] ,'PGD',k,source=data_source,xtitle=None,  ytitle='PGD',vmin=0,vmax=1)
-            plot_single(fig, ax[3] ,'PSA_0.3Hz',k,source=data_source,xtitle=None,  ytitle='PSA 0.3 Hz',vmin=0,vmax=17)
-            plot_single(fig, ax[4] ,'PSA_1.0Hz'  ,k,source=data_source,xtitle=None,  ytitle='PSA 1 Hz',vmin=0,vmax=17)
-            plot_single(fig, ax[5] ,'PSA_3.0Hz'  ,k,source=data_source,xtitle=None,  ytitle='PSA 3 Hz',vmin=0,vmax=17)
+            plot_single(fig, ax[0] ,'PGA',k,source=data_source,xtitle=k,ytitle='PGA',vmin=PGA_min,vmax=PGA_max)
+            plot_single(fig, ax[1] ,'PGV',k,source=data_source,xtitle=None,  ytitle='PGV',vmin=PGV_min,vmax=PGV_max)
+            plot_single(fig, ax[2] ,'PGD',k,source=data_source,xtitle=None,  ytitle='PGD',vmin=PGD_min,vmax=PGD_max)
+            plot_single(fig, ax[3] ,'PSA_0.3Hz',k,source=data_source,xtitle=None,  ytitle='PSA 0.3 Hz',vmin=PSA_03Hz_min,vmax=PSA_03Hz_max)
+            plot_single(fig, ax[4] ,'PSA_1.0Hz'  ,k,source=data_source,xtitle=None,  ytitle='PSA 1 Hz',vmin=PSA_1Hz_min,vmax=PSA_1Hz_max)
+            plot_single(fig, ax[5] ,'PSA_3.0Hz'  ,k,source=data_source,xtitle=None,  ytitle='PSA 3 Hz',vmin=PSA_3Hz_min,vmax=PSA_3Hz_max)
             i+=1
         fig.savefig(gm_path+"/RAMap_"+self.label+".png")
 

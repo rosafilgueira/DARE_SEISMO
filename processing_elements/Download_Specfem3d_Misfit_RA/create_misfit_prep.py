@@ -48,7 +48,8 @@ class ReadDataPE(GenericPE):
             data_file = os.path.join(data_dir, network + "." + station + ".." + '?H?.mseed')
             #synt_file = os.path.join(synt_dir, network + "." + station + "." + '?X?.seed' + fe)
             ### in case we have the ascii synthetic traces, we have to comment the previous line, and uncomment the following one####### 
-            synt_file = os.path.join(synt_dir, network + "." + station + "." + '?X?.sem' + fe)
+            #synt_file = os.path.join(synt_dir, network + "." + station + "." + '?X?.sem' + fe)
+            synt_file = os.path.join(synt_dir, network + "." + station + "." + '?X?.sem' + fe +'*') #rf+fm read sac files
             sxml = os.path.join(stations_dir, network + "." + station + ".xml")
             real_stream, sta, event = mf.read_stream(data_file, sxml=sxml,
                                                   event_file=quakeml,

@@ -19,64 +19,69 @@ from dispel4py.workflow_graph import WorkflowGraph
 from obspy.core.stream import read
 from obspy.signal.invsim import corn_freq_2_paz, simulate_seismometer
 from obspy.signal import differentiate_and_integrate as di
-
+from obspy import read_inventory
+import obspy
 import math
 import numpy as np
 import os
-import json
+import re
+import json, glob
 from collections import defaultdict
 
-def calculate_norm(stream):
-    station = stream[0].stats.station
-    channels = set()
-    for tr in stream:
-        if station == tr.stats.station:
-            channels.add(tr.stats.channel[-1])
-        else:
+def select_horizontal_channels(stream):
+    channels = stream.select(channel='??[R,T]')
+    print(channels)
+    print(stream)
+    if len(channels)==0:
+        channels = stream.select(channel='??[N,E]')
+        if len(channels)==0:
             return None
+    return channels
 
-    data_mean = None
-    data_max = None
-    if channels < set(['R','T']) or channels < set(['N','E']):
 
-        if len(stream) == 1:
-            return stream[0].data.copy(), stream[0].data.copy(), None
 
-        for tr in stream:
-            d = tr.data.copy()
-            if data_mean is None:
-                data_mean = np.square(d)
-                data_max = np.abs(d)
-            else:
-                data_mean = data + np.square(d)
-                data_max = data + np.abs(d)
 
-        data_mean = np.sqrt(data)
-        data_max = np.max(data)
+def calculate_norm(stream,ty,delta):
+    station = stream[0].stats.station
+    print(station)
+    print(len(stream))
+    print(stream)
+    channels=select_horizontal_channels(stream)
 
-    return data_mean, data_max, d
+    data_v_square = 0.
+    data_a_square = 0.
+    data_d_square = 0.
+    data_v_max = 0.
+    data_a_max = 0.
+    data_d_max = 0.
 
-def calculate_pgm(data, ty, delta):
-    pgm = max(abs(data))
-    if ty == 'velocity':
-        pgv = pgm
-        int_data = di.integrate_cumtrapz(data, delta)
-        pgd = max(abs(int_data))
-        grad_data = np.gradient(data, delta)
-        pga = max(abs(grad_data))
-    elif ty == 'displacement':
-        pgd = pgm
-        grad_data = np.gradient(data, delta)
-        pgv = max(abs(grad_data))
-        grad2_data = np.gradient(grad_data, delta)
-        pga = max(abs(grad2_data))
-    elif ty == 'acceleration':
-        pga = pgm
-        int_data = di.integrate_cumtrapz(data, delta)
-        pgv = max(abs(int_data))
-        int2_data = di.integrate_cumtrapz(int_data, delta)
-        pgd = max(abs(int2_data))
-    return pgd, pgv, pga
+
+    for channel in channels:
+        if ty == 'velocity':
+            data_v = channel
+            data_a = di.integrate_cumtrapz(channel, delta)
+            data_d = np.gradient(channel, delta)
+        elif ty == 'displacement':
+            data_v = channel
+            data_a = np.gradient(channel, delta)
+            data_d = np.gradient(data_v, delta)
+        elif ty == 'acceleration':
+            data_v= channel
+            data_a= di.integrate_cumtrapz(channel, delta)
+            data_d= di.integrate_cumtrapz(data_v, delta)
+        data_v_square=data_v_square+np.square(data_v)
+        data_a_square=data_a_square+np.square(data_a)
+        data_d_square=data_d_square+np.square(data_d)
+        data_v_max=np.maximum(data_v_max,np.abs(data_v))
+        data_a_max=np.maximum(data_a_max,np.abs(data_a))
+        data_d_max=np.maximum(data_d_max,np.abs(data_d))
+
+    data_v_mean=np.sqrt(data_v_square)
+    data_a_mean=np.sqrt(data_a_square)
+    data_d_mean=np.sqrt(data_d_square)
+
+    return data_d_mean, data_v_mean, data_a_mean, data_d_max, data_v_max, data_a_max
+
 
 def calculate_damped_spectral_acc(data,delta,freq,damp,ty):
 
@@ -98,9 +103,8 @@ def calculate_damped_spectral_acc(data,delta,freq,damp,ty):
     data = simulate_seismometer(data, samp_rate, paz_remove=None,
                             paz_simulate=paz_sa, taper=True,
                             simulate_sensitivity=True, taper_fraction=0.05)
-    dmp_spec_acc = max(abs(data))
 
-    return dmp_spec_acc
+    return data
 
 
 class StreamProducer(IterativePE):
@@ -108,25 +112,24 @@ class StreamProducer(IterativePE):
     def __init__(self, label):
         IterativePE.__init__(self)
         self.label = label
+        self.ext = 'data' if label == 'real' else label
+        self.pattern = re.compile('(\w*\.\w*)\.(\w*)\.{}'.format(self.ext))
 
     def _process(self, input):
-        filename = input
-        self.write('output', [read(filename), self.label])
+        stations = defaultdict(lambda:[])
+        # first group all files by station
+        for filename in os.listdir(input):
+             m = self.pattern.match(filename)
+             if m:
+                 stations[m.group(1)].append(m.group(2))
 
-
-class NormPE(GenericPE):
-    def __init__(self):
-        GenericPE.__init__(self)
-        self._add_input("input")
-        self._add_output("output_mean")
-        self._add_output("output_max")
-
-    def _process(self, data):
-        stream, filename = data['input']
-        data_mean, data_max, d = calculate_norm(stream)
-        self.write('output_mean', [stream, filename, data_mean, 'mean'])
-        self.write('output_max', [stream, filename, data_max, 'max'])
-
+        # now read and create an obspy stream from each group
+        for s, fs in stations.items():
+            streaming=obspy.Stream()
+            for f in fs:
+                filename = os.path.join(input, '{}.{}.{}'.format(s, f, self.ext))
+                streaming=streaming+read(filename)
+            self.write('output', [streaming, self.label])
 
 class PeakGroundMotion(IterativePE):
     def __init__(self,ty,freq=(0.3, 1.0, 3.0),damp=0.1):
@@ -136,13 +139,23 @@ class PeakGroundMotion(IterativePE):
         self.damp = damp
 
     def _process(self, s_data):
-        stream, filename, data, p_norm = s_data
+        print('data: ',s_data)
+        stream, filename, (data_d, data_v, data_a), p_norm = s_data
         delta = stream[0].stats.delta
-        pgd, pgv, pga = calculate_pgm(data, self.ty, delta)
+        pgd, pgv, pga = max(data_d), max(data_v), max(data_a)
+
+        channels=select_horizontal_channels(stream)
         dmp_spec_acc = {}
         for freq in self.frequencies:
-            dmp = calculate_damped_spectral_acc(data, delta, freq, self.damp, self.ty)
-            dmp_spec_acc['PSA_{}Hz'.format(freq)] = dmp.item()
+            data_dump = 0.
+            for channel in channels:
+                data = calculate_damped_spectral_acc(channel,delta,freq,self.damp,self.ty)
+                if p_norm == 'mean':
+                    data_dump=data_dump+np.square(data)
+                elif p_norm == 'max':
+                    data_dump=np.maximum(data_dump,np.abs(data))
+            if p_norm == 'mean': data_dump=np.sqrt(data_dump)
+            dmp_spec_acc['PSA_{}Hz'.format(freq)] = max(data_dump).item()
 
         results = {
             'PGD': pgd.item(),
@@ -157,6 +170,26 @@ class PeakGroundMotion(IterativePE):
         )
 
 
+
+
+class NormPE(GenericPE):
+    def __init__(self,ty):
+        GenericPE.__init__(self)
+        self._add_input("input")
+        self._add_output("output_mean")
+        self._add_output("output_max")
+        self.ty=ty
+
+    def _process(self, data):
+        print('data: ',data)
+        stream, filename = data['input']
+        delta = stream[0].stats.delta
+        data_d_mean, data_v_mean, data_a_mean, data_d_max, data_v_max, data_a_max = calculate_norm(stream,self.ty,delta)
+        self.write('output_mean', [stream, filename, (data_d_mean, data_v_mean, data_a_mean), 'mean'])
+        self.write('output_max', [stream, filename, (data_d_max, data_v_max, data_a_max), 'max'])
+
+
+
 class Match(GenericPE):
     def __init__(self):
         GenericPE.__init__(self)
@@ -169,7 +202,6 @@ class Match(GenericPE):
         p_norm = pgm['p_norm']
         self.store[(station, p_norm)][label] = stream, ty, pgm
         if len(self.store[(station, p_norm)]) >= 2:
-            print('output: {} {}'.format(station, p_norm))
             self.write('output', [station, p_norm, self.store[(station, p_norm)]])
             del self.store[station, p_norm]
 
@@ -192,8 +224,13 @@ class WriteGeoJSON(ConsumerPE):
         stream_r, ty_r, pgm_r = matching_data['real']
         stream_s, ty_s, pgm_s = matching_data['synth']
         try:
-            sac = stream_r[0].stats.sac
-            coordinates = [sac.stla.item(), sac.stlo.item()]
+            station = stream_r[0].stats.station
+            network = stream_r[0].stats.network
+            inventory_path=misfit_path+"/stations/"+network+"."+station+".xml"
+            inv = read_inventory(inventory_path , format="STATIONXML")
+            net = inv[0]
+            sta = net[0]
+            coordinates = [sta.latitude, sta.longitude]
         except:
             coordinates = []
         for param in pgm_r:
@@ -203,7 +240,7 @@ class WriteGeoJSON(ConsumerPE):
             difference[param] = diff
             relative_difference[param] = rel_diff
 
-        output_dir = os.environ['OUTPUT'] 
+        output_dir = os.environ['OUTPUT']
         output_data={
             "type": "Feature",
             "properties": {
@@ -223,14 +260,16 @@ class WriteGeoJSON(ConsumerPE):
         with open(output_dir+filename, 'w') as outfile:
             json.dump(output_data, outfile)
 
+misfit_path=os.environ['STAGED_DATA']
 
 streamProducerReal=StreamProducer('real')
 streamProducerReal.name="streamProducerReal"
 streamProducerSynth=StreamProducer('synth')
 streamProducerSynth.name='streamProducerSynth'
-norm=NormPE()
-pgm_mean=PeakGroundMotion('velocity')
-pgm_max=PeakGroundMotion('velocity')
+seismogram_type='velocity'
+norm=NormPE(seismogram_type)
+pgm_mean=PeakGroundMotion(seismogram_type)
+pgm_max=PeakGroundMotion(seismogram_type)
 match = Match()
 write_stream = WriteGeoJSON()
 
@@ -243,4 +282,3 @@ graph.connect(norm, 'output_max', pgm_max,'input')
 graph.connect(pgm_max, 'output', match, 'input')
 graph.connect(pgm_mean, 'output', match, 'input')
 graph.connect(match,'output',write_stream,'input')
-
