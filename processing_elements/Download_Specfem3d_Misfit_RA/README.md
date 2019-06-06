@@ -36,3 +36,19 @@ zip of the folder containing the input parameter files of specfem3d https://gitl
 
 Output:  
 synthetic seismograms in ascii format stored in a directory called OUTPUT_FILES/
+
+2. Create input for download:  
+this workflow reads the input files of the specfem3d simulation and creates the corresponding input json file for the following download workflow  
+```
+dispel4py simple create_download_json.py -d '{"WJSON" :
+[{"specfem3d_data_url":"https://gitlab.com/project-dare/WP6_EPOS/raw/master/processing_elements/CWL_total_staged/TEST_ADD_CREATEJSON/data.zip",
+"output":"download_test.json"}]}'
+```
+
+Input:  
+https://gitlab.com/project-dare/WP6_EPOS/blob/master/processing_elements/CWL_total_staged/TEST_ADD_CREATEJSON/data.zip   
+(uploaded by the user)
+
+Output:  
+json file that will be the input of the download workflow [download_test.json]download_test.json)  
+the file is created in the main dir where the workflow runs
