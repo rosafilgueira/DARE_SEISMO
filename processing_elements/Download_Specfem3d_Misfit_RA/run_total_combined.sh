@@ -29,8 +29,11 @@ export OUTPUT="./GM/"
 
 
 ######## 2. Create input for download -- This workflow read the input files of the specfem3d simulation and creates the corresponding input json file for the following download workflow
+# python -m dispel4py.new.process simple create_download_json.py -d '{"WJSON" :
+# [{"specfem3d_data_url":"https://gitlab.com/project-dare/WP6_EPOS/raw/master/processing_elements/CWL_total_staged/TEST_ADD_CREATEJSON/data.zip",
+# "output":"download_test.json"}]}'
 python -m dispel4py.new.process simple create_download_json.py -d '{"WJSON" :
-[{"specfem3d_data_url":"https://gitlab.com/project-dare/WP6_EPOS/raw/master/processing_elements/CWL_total_staged/TEST_ADD_CREATEJSON/data.zip",
+[{"specfem3d_data_url":"https://gitlab.com/project-dare/WP6_EPOS/raw/RA_total_script/processing_elements/Download_Specfem3d_Misfit_RA/data.zip",
 "output":"download_test.json"}]}'
 
 
