@@ -1,6 +1,12 @@
 fmagnoni
-Preliminary changes.
+PRELIMINARY CHANGES.
+
 The download of waveforms still does not work if we add the intermediate step of creating the json input for download. More tests are required.
+Important: the data.zip file in this folder has been removed so the link to this file should be changed.
+
+When the dispel4py workflow works copy and paste the required changes in the scripts of this directory.
+
+DO NOT REMOVE THE FILES IN THIS FOLDER!
 
 
 # CWL Workflow for the Rapid Assessment (RA) Use Case
