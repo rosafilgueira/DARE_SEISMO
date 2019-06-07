@@ -9,4 +9,4 @@ input=BASEMPIDIR.txt
 BASEMPIDIR=$(head -n 1 $input)
 
 echo $NPROC $BASEMPIDIR
-./bin/xdecompose_mesh $NPROC ./DATA/mesh_homogeneous $BASEMPIDIR
+./bin/xdecompose_mesh $NPROC ./DATA/mesh $BASEMPIDIR
