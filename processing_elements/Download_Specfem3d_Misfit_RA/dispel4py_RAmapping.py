@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 try:
     from mpl_toolkits.basemap import Basemap
 except:
-    import os
     os.environ['PROJ_LIB']="/Users/fmagnoni/anaconda3/share/proj"
     from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
