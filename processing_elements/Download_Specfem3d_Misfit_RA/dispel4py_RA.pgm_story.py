@@ -256,7 +256,7 @@ class WriteGeoJSON(ConsumerPE):
             }
         }
         # self.log("output_data is %s" % json.dumps(output_data))
-        filename = "./{}_{}.json".format(station, p_norm)
+        filename = "/{}_{}.json".format(station, p_norm)
         with open(output_dir+filename, 'w') as outfile:
             json.dump(output_data, outfile)
 
