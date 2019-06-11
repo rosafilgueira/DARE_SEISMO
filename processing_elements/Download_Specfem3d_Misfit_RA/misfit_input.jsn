@@ -10,6 +10,9 @@
                 "output_dir" : "./misfit_data/output",
                 "network": [
                     "IV",
+					"IV",
+					"IV",
+					"IV",
                     "IV",
                     "IV",
                     "IV",
@@ -34,13 +37,18 @@
                     "IV",
                     "IV",
                     "IV",
-                    "IV"
+                    "IV",
+					"IV",
+					"MN"
                 ],
                 "station": [
-		    "ARRO", 
+		    "ARRO",
+			"CAFR", 
 		    "CAMP", 
 		    "CERA", 
-		    "FAGN",
+			"CERT",
+			"CESX",
+			"FAGN",
 		    "FIAM", 
 		    "GIUL", 
 		    "GUAR", 
@@ -49,12 +57,13 @@
 		    "LAV9", 
 		    "LNSS", 
 		    "LPEL", 
-		    "MIDA", 
+		    "MIDA",
+			"MODR", 
 		    "NRCA", 
 		    "POFI", 
                     "PTQR", 
                     "RMP",
-                    "RNI2", 
+					"RNI2",
                     "SAMA", 
                     "SGG", 
                     "SMA1", 
@@ -62,7 +71,8 @@
                     "TRTR", 
                     "VAGA",
                     "VCEL", 
-		    "VVLD" 
+		    "VVLD", 
+			"AQU"
                 ]
             }
         }
