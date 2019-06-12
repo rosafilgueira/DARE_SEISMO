@@ -15,6 +15,8 @@ WriteStream3: output_data is {'GroundMotion': {'stream': 'IV.MA9..HHR.START.OTLO
 from dispel4py.core import GenericPE
 from dispel4py.base import BasePE, IterativePE, ConsumerPE, create_iterative_chain
 from dispel4py.workflow_graph import WorkflowGraph
+from dispel4py.provenance import *  #prov
+from seismo import SeismoSimpleFunctionPE, SeismoPE  #prov
 
 from obspy.core.stream import read
 from obspy.signal.invsim import corn_freq_2_paz, simulate_seismometer
@@ -185,8 +187,10 @@ class NormPE(GenericPE):
         stream, filename = data['input']
         delta = stream[0].stats.delta
         data_d_mean, data_v_mean, data_a_mean, data_d_max, data_v_max, data_a_max = calculate_norm(stream,self.ty,delta)
-        self.write('output_mean', [stream, filename, (data_d_mean, data_v_mean, data_a_mean), 'mean'])
-        self.write('output_max', [stream, filename, (data_d_max, data_v_max, data_a_max), 'max'])
+        # self.write('output_mean', [stream, filename, (data_d_mean, data_v_mean, data_a_mean), 'mean'])
+        # self.write('output_max', [stream, filename, (data_d_max, data_v_max, data_a_max), 'max'])
+        self.write('output_mean', [stream, filename, (data_d_mean, data_v_mean, data_a_mean), 'mean'],metadata={"output_d_mean":data_d_mean,"output_v_mean":data_v_mean,"output_a_mean":data_a_mean})  #prov
+        self.write('output_max', [stream, filename, (data_d_max, data_v_max, data_a_max), 'max'],metadata={"output_d_max":data_d_max,"output_v_max":data_v_max,"output_a_max":data_a_max})   #prov     
 
 
 
@@ -215,6 +219,7 @@ def comp(real_param, synt_param):
 class WriteGeoJSON(ConsumerPE):
     def __init__(self):
         ConsumerPE.__init__(self)
+        self._add_output('output')  #prov
 
     def _process(self, data):
         station, p_norm, matching_data = data
@@ -259,6 +264,7 @@ class WriteGeoJSON(ConsumerPE):
         filename = "/{}_{}.json".format(station, p_norm)
         with open(output_dir+filename, 'w') as outfile:
             json.dump(output_data, outfile)
+            self.write('output',output_data,location=output_dir+filename)  #prov
 
 misfit_path=os.environ['STAGED_DATA']
 
@@ -282,3 +288,60 @@ graph.connect(norm, 'output_max', pgm_max,'input')
 graph.connect(pgm_max, 'output', match, 'input')
 graph.connect(pgm_mean, 'output', match, 'input')
 graph.connect(match,'output',write_stream,'input')
+
+############################################
+##prov
+prov_config =  {
+                    'provone:User': "fmagnoni", 
+                    's-prov:description' : "PGM Comparison",
+                    's-prov:workflowName': "PGM",
+                    's-prov:workflowType': "seis:pga_comparison",
+                    's-prov:workflowId'  : "workflow pgm",
+                    's-prov:save-mode'   : 'service'         ,
+                    's-prov:WFExecutionInputs':  [{
+                        "url": "",
+                        "mime-type": "text/json",
+                        "name": "input_data"
+                        
+                         
+                     },{"url": "/prov/workflow/export/"+os.environ['PREPOC_RUNID'],
+                     "prov:type": "wfrun",
+                     "mime-type": "application/octet-stream",
+                     "name": "preproc_workflow",
+                     "runid":os.environ['PREPOC_RUNID']}],
+                    # defines the Provenance Types and Provenance Clusters for the Workflow Components
+                    's-prov:componentsType' : 
+                                       {'streamProducerReal': {'s-prov:type':(SeismoPE,),
+                                                     's-prov:prov-cluster':'seis:Processor'},
+                                        'streamProducerSynth':    {'s-prov:prov-cluster':'seis:DataHandler',
+                                                           's-prov:type':(SeismoPE,)},
+                                        'Match': {'s-prov:prov-cluster':'seis:DataHandler',
+                                                           's-prov:type':(ASTGrouped,)},
+                                        },
+                    's-prov:sel-rules': None
+                } 
+                
+
+ProvenanceType.REPOS_URL=os.environ['REPOS_URL']
+
+
+# rid='JUP_PGM_'+getUniqueId()
+rid=os.environ['PGM_RUNID']
+                
+configure_prov_run(graph,
+                 provImpClass=(ProvenanceType,),
+                 input=prov_config['s-prov:WFExecutionInputs'],
+                 username=prov_config['provone:User'],
+                 runId=rid,
+                 description=prov_config['s-prov:description'],
+                 workflowName=prov_config['s-prov:workflowName'],
+                 workflowType=prov_config['s-prov:workflowType'],
+                 workflowId=prov_config['s-prov:workflowId'],
+                 save_mode=prov_config['s-prov:save-mode'],
+                 componentsType=prov_config['s-prov:componentsType'],
+                 sel_rules=prov_config['s-prov:sel-rules']
+
+                    )
+############################################
+
+

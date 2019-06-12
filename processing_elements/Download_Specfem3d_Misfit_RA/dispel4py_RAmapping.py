@@ -11,6 +11,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from dispel4py.core import GenericPE
 from dispel4py.base import ConsumerPE
 from dispel4py.workflow_graph import WorkflowGraph
+from dispel4py.provenance import *
 
 
 def plot_single(f,ax,variable='PGV',kind='data',source=None,bounds=None,xtitle=None,ytitle=None,vmin=None,vmax=None):
@@ -71,7 +72,7 @@ class StreamProducer(GenericPE):
         self._add_output("output_max")
         self._add_output("output_mean")
 
-    def process(self, inputs):
+    def _process(self, inputs):
          data_max={}
          data_mean={}
          data_max["features"]=[]
@@ -96,6 +97,7 @@ class PlotMap(ConsumerPE):
     def __init__(self, label):
         ConsumerPE.__init__(self)
         self.label = label
+        self._add_output("plot")
 
     def _process(self, data):
         data_source = data
@@ -141,7 +143,9 @@ class PlotMap(ConsumerPE):
             plot_single(fig, ax[4] ,'PSA_1.0Hz'  ,k,source=data_source,xtitle=None,  ytitle='PSA 1 Hz',vmin=PSA_1Hz_min,vmax=PSA_1Hz_max)
             plot_single(fig, ax[5] ,'PSA_3.0Hz'  ,k,source=data_source,xtitle=None,  ytitle='PSA 3 Hz',vmin=PSA_3Hz_min,vmax=PSA_3Hz_max)
             i+=1
-        fig.savefig(gm_path+"/RAMap_"+self.label+".png")
+        savefig=gm_path+"/RAMap_"+self.label+".png"
+        fig.savefig(savefig)
+        self.write('plot',savefig,location=savefig,format="image/png")
 
 
 gm_path=os.environ['OUTPUT']
@@ -153,3 +157,38 @@ plotMean=PlotMap("mean")
 graph = WorkflowGraph()
 graph.connect(producer_PE, "output_max", plotMax, "input")
 graph.connect(producer_PE, "output_mean", plotMean, "input")
+
+prov_config =  {
+                    'provone:User': "fmagnoni", 
+                    's-prov:description' : "RA Mapping",
+                    's-prov:workflowName': "RAMapping",
+                    's-prov:workflowType': "seis:pgm_comparison",
+                    's-prov:workflowId'  : "workflow process",
+                    's-prov:save-mode'   : 'service'         ,
+                    's-prov:WFExecutionInputs':  [{
+                        "url": "",
+                        "mime-type": "text/json",
+                        "name": "input_data"
+                         
+                     },{"url": "/prov/workflow/export/"+os.environ['PGM_RUNID'],
+                     "prov:type": "wfrun",
+                     "mime-type": "application/octet-stream",
+                     "name": "PGA",
+                     "runid":os.environ['PGM_RUNID']}
+                     ],
+                     
+                } 
+                
+ProvenanceType.REPOS_URL=os.environ['REPOS_URL']
+
+#rid='JUP_DOWNLOAD_'+getUniqueId()
+rid=os.environ['RAMAP_RUNID']
+
+# Finally, provenance enhanced graph is prepared:
+ 
+#Initialise provenance storage to service:
+configure_prov_run(graph, 
+                 provImpClass=(ProvenanceType,),
+                 sprovConfig=prov_config,
+                 runId=rid
+                )

@@ -16,11 +16,13 @@ export PYTHONPATH=$PYTHONPATH:.
 export MISFIT_PREP_CONFIG="processing.json"
 export STAGED_DATA="./misfit_data/"
 export OUTPUT="./GM/"
-##fm: added for provenance but not working anymore
-# export DOWNL_RUNID="DOWNL-"`uuidgen`
-# export PREPOC_RUNID="PREPROC-"`uuidgen`
-# export PGM_RUNID="PGM-"`uuidgen`
-# export REPOS_URL="http://testbed.project-dare.eu/prov/workflowexecutions/insert"
+##fm: added for provenance 
+export DOWNL_RUNID="DOWNL-"`uuidgen`
+export PREPOC_RUNID="PREPROC-"`uuidgen`
+export PGM_RUNID="PGM-"`uuidgen`
+export DJSON_RUNID="DJSON-"`uuidgen`
+export RAMAP_RUNID="RAMAP-"`uuidgen`
+export REPOS_URL="http://testbed.project-dare.eu/prov/workflowexecutions/insert"
 ##
 
 
@@ -28,45 +30,24 @@ export OUTPUT="./GM/"
 ######## 1. Run waveform simulation --- Specfem3D  -- it creates the sythetic waveforms (seeds)
 
 
-######## 2. Create input for download -- This workflow read the input files of the specfem3d simulation and creates the corresponding input json file for the following download workflow
-# python -m dispel4py.new.process simple create_download_json.py -d '{"WJSON" :
-# [{"specfem3d_data_url":"https://gitlab.com/project-dare/WP6_EPOS/raw/master/processing_elements/CWL_total_staged/TEST_ADD_CREATEJSON/data.zip",
-# "output":"download_test.json"}]}'
-python -m dispel4py.new.process simple create_download_json.py -d '{"WJSON" :
+######## 2. Create input for download -- it reads the input files of the specfem3d simulation and creates the corresponding input json file for the following download workflow
+dispel4py simple create_download_json.py -d '{"WJSON" :
 [{"specfem3d_data_url":"https://gitlab.com/project-dare/WP6_EPOS/raw/RA_total_script/processing_elements/Download_Specfem3d_Misfit_RA/data.zip",
 "output":"download_test.json"}]}'
 
 
-######## 3. Get observed data -- This workflow download the obseved waveforms and stations xml
-#fm: added RECORD_LENGTH_IN_MINUTES and start & end to download_FDSN.py
-#dispel4py simple download_FDSN.py -f download_chile.json  #works properly
-##BETTER using the json produced by the previous step
-python -m dispel4py.new.processor simple download_FDSN.py -f download_test.json
-#fm: try to use the version with provenance but not working anymore
-# dispel4py simple download_FDSN_prov.py -f download_chile.json
+######## 3. Get observed data -- it downloads the observed waveforms and stations xml
+dispel4py simple download_FDSN.py -f download_test.json
 
 
-# ####### 4. Get pre-processed synth and data --- Misfit Preprocess
-# ## Problem: It needs also events and event_id files - Where do I get them ?
-#                 "events": "./misfit_data/events_simulation_CI_CI_test_0_1507128030823"
-#                 "event_id": "smi:webservices.ingv.it/fdsnws/event/1/query?eventId=1744261"
-python -m dispel4py.new.processor simple create_misfit_prep.py -f misfit_input.jsn
+# ####### 4. Get pre-processed synth and data --- it preprocesses observed and synthetic seismograms
+dispel4py simple create_misfit_prep.py -f misfit_input.jsn
 
 
-# ####### 5. Get ground motion parameters and compare them
-# declare -a arr=("IV.ARRO" "IV.CERA" "IV.FAGN" "IV.FIAM" "IV.GIUL" "IV.GUAR" "IV.INTR" "IV.LATB" "IV.LAV9" "IV.LNSS" "IV.LPEL" "IV.MIDA" "IV.NRCA" "IV.POFI" "IV.PTQR" "IV.RMP" "IV.RNI2" "IV.SAMA" "IV.SGG" "IV.SMA1" "IV.TERO" "IV.TRTR" "IV.VAGA")
-# # declare -a arr=("IV.ARRO" "IV.VAGA")
-# #
-# for i in "${arr[@]}"
-# do
-#    searchpath="./misfit_data/output/"
-#    real_pattern=${searchpath}$i".??*.data"
-#    synth_pattern=${searchpath}$i".??*.synth"
-#    python -m dispel4py.new.processor simple dispel4py_RA.pgm_story.py -d '{"streamProducerReal": [ {"input":"'$real_pattern'" } ], "streamProducerSynth": [ {"input": "'$synth_pattern'"} ]}'
-# done
+# ####### 5. Get ground motion parameters and compare them --- it calculates pgm parameters from observed and synthetic seismograms and compare them
 searchpath="./misfit_data/output/"
-python -m dispel4py.new.processor simple dispel4py_RA.pgm_story.py -d '{"streamProducerReal": [ {"input":"'$searchpath'" } ], "streamProducerSynth": [ {"input": "'$searchpath'"} ]}'
+dispel4py simple dispel4py_RA.pgm_story.py -d '{"streamProducerReal": [ {"input":"'$searchpath'" } ], "streamProducerSynth": [ {"input": "'$searchpath'"} ]}'
 
 
-# ####### 6. Plot the PGM map
-python -m dispel4py.new.processor simple dispel4py_RAmapping.py
+# ####### 6. Plot the PGM map --- it plots maps of pgm parameters and of comparisons between data and synth
+dispel4py simple dispel4py_RAmapping.py

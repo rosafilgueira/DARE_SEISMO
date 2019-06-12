@@ -1,6 +1,8 @@
 from dispel4py.base import SimpleFunctionPE
 from dispel4py.workflow_graph import WorkflowGraph
 from dispel4py.base import create_iterative_chain, ConsumerPE, IterativePE
+from dispel4py.provenance import *
+from seismo import SeismoSimpleFunctionPE, SeismoPE, PlotPE
 
 import obspy
 from obspy.core import read
@@ -48,7 +50,11 @@ def plot_stream(stream, output_dir, source, tag):
             pass
     dest = os.path.join(path, filename)
     stream.plot(outfile=dest)
-    return stream
+    # return stream
+    prov = {'location': "file://" + socket.gethostname() + "/" + dest, 'format': 'image/png',
+                'metadata': {'prov:type': tag,'station':stats['station'],'channel':stats['channel'],'network':stats['network']}}
+    return {'_d4p_prov': prov, '_d4p_data': stream}
+    
 
 
 # Rectangular domain containing parts of southern Germany.
@@ -136,7 +142,12 @@ def download_data(data,add_end,add_start):    #fm
                                     "provider_url": URL_MAPPINGS[r["client"]],
                                     "station": "%s.%s" % (station.network, station.station)})
 
-    return os.environ['STAGED_DATA'] + "/" + data['mseed_path'], os.environ['STAGED_DATA'] + "/" + data['stationxml_path']
+    # return os.environ['STAGED_DATA'] + "/" + data['mseed_path'], os.environ['STAGED_DATA'] + "/" + data['stationxml_path']
+    prov = {'location': ["file://" + socket.gethostname() + "/" + os.environ['STAGED_DATA'] + "/" + data['mseed_path'],
+                             "file://" + socket.gethostname() + "/" + os.environ['STAGED_DATA'] + "/" + data[
+                                 'stationxml_path']], 'format': 'multipart/mixed', 'metadata': download_report}
+    return {'_d4p_prov': prov, '_d4p_data': [os.environ['STAGED_DATA'] + "/" + data['mseed_path'],
+                                        os.environ['STAGED_DATA'] + "/" + data['stationxml_path']]}
 
 
 class WatchDirectory(IterativePE):
@@ -173,4 +184,60 @@ graph.connect(downloadPE, 'output', watcher, "input")
 graph.connect(downloadPE, 'output', watcher_xml, "input")
 graph.connect(watcher, 'output', chain, "input")
 graph.connect(watcher_xml, 'output', xmlr, "input")
+
+prov_config =  {
+                    'provone:User': "fmagnoni", 
+                    's-prov:description' : "download data",
+                    's-prov:workflowName': "download",
+                    's-prov:workflowType': "seis:preprocess",
+                    's-prov:workflowId'  : "workflow process",
+                    's-prov:save-mode'   : 'service'         ,
+                    's-prov:WFExecutionInputs':  [{
+                        "url": "",
+                        "mime-type": "text/json",
+                        "name": "input_data"
+                         
+                     },{"url": "/prov/workflow/export/"+os.environ['DJSON_RUNID'],
+                     "prov:type": "wfrun",
+                     "mime-type": "application/octet-stream",
+                     "name": "download json",
+                     "runid":os.environ['DJSON_RUNID']}
+                     ],
+    
+                    # defines the Provenance Types and Provenance Clusters for the Workflow Components
+                    's-prov:componentsType' : 
+                                       {'PE_waveform_reader': {'s-prov:type':(SeismoPE,),
+                                                     's-prov:prov-cluster':'seis:Reader'},
+                                        
+                                        },
+                                        
+                    's-prov:sel-rules': None
+                } 
+                
+ProvenanceType.REPOS_URL=os.environ['REPOS_URL']
+
+#rid='JUP_DOWNLOAD_'+getUniqueId()
+rid=os.environ['DOWNL_RUNID']
+
+# Finally, provenance enhanced graph is prepared:
+ 
+#Initialise provenance storage to service:
+configure_prov_run(graph, 
+                 provImpClass=(ProvenanceType,),
+                 input=prov_config['s-prov:WFExecutionInputs'],
+                 username=prov_config['provone:User'],
+                 runId=rid,
+                 description=prov_config['s-prov:description'],
+                 workflowName=prov_config['s-prov:workflowName'],
+                 workflowType=prov_config['s-prov:workflowType'],
+                 workflowId=prov_config['s-prov:workflowId'],
+                 save_mode=prov_config['s-prov:save-mode'],
+                 componentsType=prov_config['s-prov:componentsType'],
+                 #sel_rules=prov_config['s-prov:sel-rules']
+                  
+                )
+                
+
+
+
 

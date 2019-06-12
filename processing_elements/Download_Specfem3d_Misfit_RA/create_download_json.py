@@ -1,6 +1,7 @@
 from dispel4py.base import SimpleFunctionPE
 from dispel4py.workflow_graph import WorkflowGraph
 from dispel4py.base import create_iterative_chain, ConsumerPE, IterativePE, ProducerPE
+from dispel4py.provenance import *
 
 import obspy
 from obspy.core import read
@@ -193,8 +194,39 @@ class WriteJSON(ProducerPE):
         with open(filename, "w") as write_file:
             json.dump(d, write_file)
 
+        self.write('output',write_file,location=filename,metadata=d["downloadPE"][0]["input"])
+
 write_stream = WriteJSON()
 write_stream.name="WJSON"
 
 graph = WorkflowGraph()
 graph.add(write_stream)
+
+prov_config =  {
+                    'provone:User': "fmagnoni", 
+                    's-prov:description' : "create input json",
+                    's-prov:workflowName': "create_jsn",
+                    's-prov:workflowType': "seis:preprocess",
+                    's-prov:workflowId'  : "workflow process",
+                    's-prov:save-mode'   : 'service'         ,
+                    's-prov:WFExecutionInputs':  [{
+                        "url": "",
+                        "mime-type": "text/json",
+                        "name": "input_data"
+                         
+                     }]
+                } 
+                
+ProvenanceType.REPOS_URL=os.environ['REPOS_URL']
+
+#rid='JUP_DOWNLOAD_'+getUniqueId()
+rid=os.environ['DJSON_RUNID']
+
+# Finally, provenance enhanced graph is prepared:
+ 
+#Initialise provenance storage to service:
+configure_prov_run(graph, 
+                 provImpClass=(ProvenanceType,),
+                 sprovConfig=prov_config,
+                 runId=rid
+                )
