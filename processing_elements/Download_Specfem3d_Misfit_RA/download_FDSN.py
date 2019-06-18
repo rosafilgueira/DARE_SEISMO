@@ -2,7 +2,6 @@ from dispel4py.base import SimpleFunctionPE
 from dispel4py.workflow_graph import WorkflowGraph
 from dispel4py.base import create_iterative_chain, ConsumerPE, IterativePE
 from dispel4py.provenance import *
-from seismo import SeismoSimpleFunctionPE, SeismoPE, PlotPE
 
 import obspy
 from obspy.core import read
@@ -13,6 +12,7 @@ import sys
 import pickle
 import xml.etree.ElementTree as ET
 
+from seismo import SeismoSimpleFunctionPE, SeismoPE, PlotPE
 from domain import RectangularDomain, CircularDomain 
 from download_helpers import Restrictions, DownloadHelper
 
