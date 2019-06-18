@@ -16,7 +16,7 @@ from dispel4py.core import GenericPE
 from dispel4py.base import BasePE, IterativePE, ConsumerPE, create_iterative_chain
 from dispel4py.workflow_graph import WorkflowGraph
 from dispel4py.provenance import *  #prov
-from seismo import SeismoSimpleFunctionPE, SeismoPE  #prov
+
 
 from obspy.core.stream import read
 from obspy.signal.invsim import corn_freq_2_paz, simulate_seismometer
@@ -29,6 +29,7 @@ import os
 import re
 import json, glob
 from collections import defaultdict
+from seismo import SeismoSimpleFunctionPE, SeismoPE  #prov
 
 def select_horizontal_channels(stream):
     channels = stream.select(channel='??[R,T]')
