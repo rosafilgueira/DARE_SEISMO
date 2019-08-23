@@ -31,7 +31,7 @@ PYTHONPATH=/Users/rosafilgueira/EPCC/DARE/dispel4py:. python -m dispel4py.new.pr
 
 # ####### 4. Get pre-processed synth and data --- Misfit Preprocess
 
-#PYTHONPATH=/Users/rosafilgueira/EPCC/DARE/dispel4py:. python -m dispel4py.new.processor multi create_misfit_prep.py -f misfit_input.jsn -n 17
+PYTHONPATH=/Users/rosafilgueira/EPCC/DARE/dispel4py:. python -m dispel4py.new.processor multi create_misfit_prep.py -f misfit_input.jsn -n 17
 
 # ####### 5. Get ground motion parameters and compare them
 
