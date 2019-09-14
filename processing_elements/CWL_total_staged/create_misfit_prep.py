@@ -6,12 +6,26 @@
 import json
 import os
 import sys
+import networkx as nx
+import glob,numpy,os
 
 import preprocessing_functions as mf
 from preprocessing_functions import get_event_time, get_synthetics, sync_cut, rotate_data
 from dispel4py.core import GenericPE
 from dispel4py.base import create_iterative_chain, ConsumerPE, IterativePE
 from dispel4py.workflow_graph import WorkflowGraph
+from dispel4py.workflow_graph import write_image
+
+
+
+def get_net_station(list_files):
+    dlist=[]
+    for d in list_files:
+        net=d.split('/')[-1].split('.')[0]
+        station=d.split('/')[-1].split('.')[1]
+        dlist.append(net+'.'+station)
+    dlist=numpy.unique(dlist)
+    return dlist
 
 
 class ReadDataPE(GenericPE):
@@ -23,15 +37,33 @@ class ReadDataPE(GenericPE):
         self.counter = 0
 
     def process(self, inputs):
-        params = inputs['input']
-        stations = params['station']
-        networks = params['network']
-        data_dir = os.environ['STAGED_DATA'] + '/' + params['data_dir']
-        synt_dir = os.environ['STAGED_DATA'] + '/' + params['synt_dir']
-        event_file = os.environ['STAGED_DATA'] + '/' + params['events']
-        event_id = os.environ['STAGED_DATA'] + '/' + params['event_id']
-        stations_dir = os.environ['STAGED_DATA'] + '/' + params['stations_dir']
-        output_dir = os.environ['STAGED_DATA'] + '/' + params['output_dir']
+
+
+        STAGED_DATA=os.environ['STAGED_DATA']
+        data_dir=os.path.join(STAGED_DATA,'data')
+        synt_dir=os.path.join(STAGED_DATA,'synth')
+        event_file=os.path.join(STAGED_DATA,'events_simulation_CI_CI_test_0_1507128030823')
+
+        from obspy.core.event import read_events
+        e=read_events(event_file)
+        event_id=e.events[0].resource_id #quakeml with single event
+
+        event_id= "smi:webservices.ingv.it/fdsnws/event/1/query?eventId=1744261"
+        stations_dir= os.path.join(STAGED_DATA,'stations')
+        output_dir= os.path.join(STAGED_DATA,'output')
+
+        data=glob.glob(os.path.join(data_dir,'*'))
+        synt=glob.glob(os.path.join(synt_dir,'*'))
+        dlist=get_net_station(data)
+        slist=get_net_station(synt)
+
+        networks=[]
+        stations=[]
+        for i,d in enumerate(dlist):
+            if d in slist:
+                networks.append(d.split('.')[0])
+                stations.append(d.split('.')[1])
+        
         fe = 'v'
         if self.output_units == 'velocity':
             fe = 'v'
@@ -48,11 +80,10 @@ class ReadDataPE(GenericPE):
             data_file = os.path.join(data_dir, network + "." + station + ".." + '?H?.mseed')
             #synt_file = os.path.join(synt_dir, network + "." + station + "." + '?X?.seed' + fe)
             ### in case we have the ascii synthetic traces, we have to comment the previous line, and uncomment the following one####### 
-            synt_file = os.path.join(synt_dir, network + "." + station + "." + '?X?.sem' + fe)
+            #synt_file = os.path.join(synt_dir, network + "." + station + "." + '?X?.sem' + fe)
+            synt_file = os.path.join(synt_dir, network + "." + station + "." + '?X?.sem' + fe +'*') #rf+fm read sac files
             sxml = os.path.join(stations_dir, network + "." + station + ".xml")
-            real_stream, sta, event = mf.read_stream(data_file, sxml=sxml,
-                                                  event_file=quakeml,
-                                                  event_id=event_id)
+            real_stream, sta, event = mf.read_stream(data_file, sxml=sxml, event_file=quakeml,event_id=event_id)
             synt_stream = get_synthetics(synt_file, 
                                          get_event_time(quakeml, event_id), station, network)
             data, synt = sync_cut(real_stream, synt_stream)
@@ -103,11 +134,6 @@ class StoreStream(ConsumerPE):
         filelist = {}
         stream, metadata = data
         output_dir = metadata['output_dir']
-        if not os.path.exists(output_dir):
-           try:
-              os.makedirs(output_dir)
-           except:
-              pass
         for i in range(len(stream)):
             stats = stream[i].stats
             filename = os.path.join(output_dir, "%s.%s.%s.%s" % (
@@ -136,9 +162,7 @@ def create_processing_chain(proc):
         processes.append((fn, params))
     return create_iterative_chain(processes, FunctionPE_class=MisfitPreprocessingFunctionPE)
 
-prep_config_file= os.environ['STAGED_DATA']+ "/" + "processing.json" 
-#with open(os.environ['MISFIT_PREP_CONFIG']) as f:
-with open(prep_config_file) as f:
+with open(os.environ['MISFIT_PREP_CONFIG']) as f:
     proc = json.load(f)
 
 real_preprocess = create_processing_chain(proc['data_processing'])
@@ -162,3 +186,6 @@ if proc['rotate_to_ZRT']:
 else:
     graph.connect(real_preprocess, 'output', store_real, 'input')
     graph.connect(synt_preprocess, 'output', store_synt, 'input')
+
+write_image(graph, "misfit.png")
+

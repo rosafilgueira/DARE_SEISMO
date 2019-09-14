@@ -8,7 +8,6 @@ inputs:
    download_workflow: File
    download_argument_f: File
    preprocess_workflow: File
-   preprocess_argument_f: File
    ra_workflow: File
    ra_argument_d: string
 outputs:
@@ -35,7 +34,6 @@ steps:
     run: dispel4py_preprocess.cwl
     in:
       workflow: preprocess_workflow
-      argument_f: preprocess_argument_f
       misfit_data: download_data/output
     out: [output]
   rapid_assessment:
