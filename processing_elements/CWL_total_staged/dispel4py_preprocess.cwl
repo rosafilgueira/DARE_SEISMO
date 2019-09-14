@@ -17,10 +17,6 @@ inputs:
   type: File
   inputBinding:
     position: 1
-- id: argument_f
-  type: File
-  inputBinding:
-    prefix: -f
 - id: misfit_data
   type: Directory
 
