@@ -25,7 +25,7 @@ preprocess_workflow:
   path: create_misfit_prep.py
   secondaryFiles:
     - class: File
-      location: misfit_input.jsn
+      location: preprocessing_functions.py
 preprocess_argument_f:
     class: File
     path: misfit_input.jsn
