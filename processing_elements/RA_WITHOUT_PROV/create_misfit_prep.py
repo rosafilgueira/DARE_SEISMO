@@ -7,6 +7,7 @@ import json
 import os
 import sys
 import networkx as nx
+import glob,numpy,os
 
 import preprocessing_functions as mf
 from preprocessing_functions import get_event_time, get_synthetics, sync_cut, rotate_data
@@ -14,6 +15,18 @@ from dispel4py.core import GenericPE
 from dispel4py.base import create_iterative_chain, ConsumerPE, IterativePE
 from dispel4py.workflow_graph import WorkflowGraph
 from dispel4py.workflow_graph import write_image
+
+
+
+def get_net_station(list_files):
+    dlist=[]
+    for d in list_files:
+        net=d.split('/')[-1].split('.')[0]
+        station=d.split('/')[-1].split('.')[1]
+        dlist.append(net+'.'+station)
+    dlist=numpy.unique(dlist)
+    return dlist
+
 
 class ReadDataPE(GenericPE):
     def __init__(self):
@@ -24,15 +37,33 @@ class ReadDataPE(GenericPE):
         self.counter = 0
 
     def process(self, inputs):
-        params = inputs['input']
-        stations = params['station']
-        networks = params['network']
-        data_dir = params['data_dir']
-        synt_dir = params['synt_dir']
-        event_file = params['events']
-        event_id = params['event_id']
-        stations_dir = params['stations_dir']
-        output_dir = params['output_dir']
+
+
+        STAGED_DATA=os.environ['STAGED_DATA']
+        data_dir=os.path.join(STAGED_DATA,'data')
+        synt_dir=os.path.join(STAGED_DATA,'synth')
+        event_file=os.path.join(STAGED_DATA,'events_simulation_CI_CI_test_0_1507128030823')
+
+        from obspy.core.event import read_events
+        e=read_events(event_file)
+        event_id=e.events[0].resource_id #quakeml with single event
+
+        event_id= "smi:webservices.ingv.it/fdsnws/event/1/query?eventId=1744261"
+        stations_dir= os.path.join(STAGED_DATA,'stations')
+        output_dir= os.path.join(STAGED_DATA,'output')
+
+        data=glob.glob(os.path.join(data_dir,'*'))
+        synt=glob.glob(os.path.join(synt_dir,'*'))
+        dlist=get_net_station(data)
+        slist=get_net_station(synt)
+
+        networks=[]
+        stations=[]
+        for i,d in enumerate(dlist):
+            if d in slist:
+                networks.append(d.split('.')[0])
+                stations.append(d.split('.')[1])
+        
         fe = 'v'
         if self.output_units == 'velocity':
             fe = 'v'
@@ -52,9 +83,7 @@ class ReadDataPE(GenericPE):
             #synt_file = os.path.join(synt_dir, network + "." + station + "." + '?X?.sem' + fe)
             synt_file = os.path.join(synt_dir, network + "." + station + "." + '?X?.sem' + fe +'*') #rf+fm read sac files
             sxml = os.path.join(stations_dir, network + "." + station + ".xml")
-            real_stream, sta, event = mf.read_stream(data_file, sxml=sxml,
-                                                  event_file=quakeml,
-                                                  event_id=event_id)
+            real_stream, sta, event = mf.read_stream(data_file, sxml=sxml, event_file=quakeml,event_id=event_id)
             synt_stream = get_synthetics(synt_file, 
                                          get_event_time(quakeml, event_id), station, network)
             data, synt = sync_cut(real_stream, synt_stream)
