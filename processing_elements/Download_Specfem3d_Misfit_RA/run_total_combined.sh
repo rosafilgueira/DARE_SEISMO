@@ -41,7 +41,7 @@ dispel4py simple download_FDSN.py -f download_test.json
 
 
 # ####### 4. Get pre-processed synth and data --- it preprocesses observed and synthetic seismograms
-dispel4py simple create_misfit_prep.py -f misfit_input.jsn
+dispel4py simple create_misfit_prep.py 
 
 
 # ####### 5. Get ground motion parameters and compare them --- it calculates pgm parameters from observed and synthetic seismograms and compare them
