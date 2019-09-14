@@ -21,6 +21,7 @@ export OUTPUT="./GM/"
 
 
 ######## 2. Create input for download -- This workflow read the input files of the specfem3d simulation and creates the corresponding input json file for the following download workflow
+
 PYTHONPATH=/Users/rosafilgueira/EPCC/DARE/dispel4py:. python -m dispel4py.new.processor simple create_download_json.py -d '{"WJSON" :
 [{"specfem3d_data_url":"https://gitlab.com/project-dare/WP6_EPOS/raw/RA_total_script/processing_elements/Download_Specfem3d_Misfit_RA/data.zip",
 "output":"download_test.json"}]}'
@@ -31,7 +32,7 @@ PYTHONPATH=/Users/rosafilgueira/EPCC/DARE/dispel4py:. python -m dispel4py.new.pr
 
 # ####### 4. Get pre-processed synth and data --- Misfit Preprocess
 
-PYTHONPATH=/Users/rosafilgueira/EPCC/DARE/dispel4py:. python -m dispel4py.new.processor simple create_misfit_prep.py -f misfit_input.jsn
+PYTHONPATH=/Users/rosafilgueira/EPCC/DARE/dispel4py:. python -m dispel4py.new.processor simple create_misfit_prep.py 
 
 # ####### 5. Get ground motion parameters and compare them
 
