@@ -112,15 +112,15 @@ class ReadDataPE(GenericPE):
             synt_stream = get_synthetics(synt_file, 
                                          get_event_time(quakeml, event_id), station, network)
             data, synt = sync_cut(real_stream, synt_stream)
-            self.write(
+             self.write(
                 'output_real', [data, { 
                     'station' : sta, 
                     'event' : event, 
                     'stationxml' : sxml, 
                     'quakeml' : quakeml, 
                     'output_dir' : output_dir }
-                ])
-
+                ],metadata={'output_units':self.output_units,'station' : station, 
+                            'eventId' : event_id, 'prov:type':'observed-pipeline'})
             self.write(
                 'output_synt', [synt, {
                     'station' : sta, 
@@ -128,7 +128,9 @@ class ReadDataPE(GenericPE):
                     'stationxml' : sxml, 
                     'quakeml' : quakeml, 
                     'output_dir' : output_dir }
-                ])
+                ],metadata={'output_units':self.output_units,'station' : station, 
+                            'eventId' : event_id,'prov:type':'synthetic-pipeline'})
+
 
 class RotationPE(IterativePE):
     def __init__(self, tag):
