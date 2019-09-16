@@ -7,7 +7,7 @@ import json
 import os
 import sys
 import networkx as nx
-import glob,numpy,os
+import glob,numpy
 
 import preprocessing_functions as mf
 from preprocessing_functions import get_event_time, get_synthetics, sync_cut, rotate_data
