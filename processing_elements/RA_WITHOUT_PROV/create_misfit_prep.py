@@ -15,6 +15,7 @@ from dispel4py.core import GenericPE
 from dispel4py.base import create_iterative_chain, ConsumerPE, IterativePE
 from dispel4py.workflow_graph import WorkflowGraph
 from dispel4py.workflow_graph import write_image
+from obspy.core.event import read_events
 
 def get_net_station(list_files):
     dlist=[]
@@ -36,32 +37,39 @@ class ReadDataPE(GenericPE):
 
     def process(self, inputs):
 
+        if not inputs:
+            STAGED_DATA=os.environ['STAGED_DATA']
+            data_dir=os.path.join(STAGED_DATA,'data')
+            synt_dir=os.path.join(STAGED_DATA,'synth')
+            event_file=os.path.join(STAGED_DATA,'events_simulation_CI_CI_test_0_1507128030823')
+            e=read_events(event_file)
+            event_id=e.events[0].resource_id #quakeml with single event
+            event_id= "smi:webservices.ingv.it/fdsnws/event/1/query?eventId=1744261"
+            stations_dir= os.path.join(STAGED_DATA,'stations')
+            output_dir= os.path.join(STAGED_DATA,'output')
 
-        STAGED_DATA=os.environ['STAGED_DATA']
-        data_dir=os.path.join(STAGED_DATA,'data')
-        synt_dir=os.path.join(STAGED_DATA,'synth')
-        event_file=os.path.join(STAGED_DATA,'events_simulation_CI_CI_test_0_1507128030823')
+            data=glob.glob(os.path.join(data_dir,'*'))
+            synt=glob.glob(os.path.join(synt_dir,'*'))
+            dlist=get_net_station(data)
+            slist=get_net_station(synt)
 
-        from obspy.core.event import read_events
-        e=read_events(event_file)
-        event_id=e.events[0].resource_id #quakeml with single event
+            networks=[]
+            stations=[]
+            for i,d in enumerate(dlist):
+                if d in slist:
+                    networks.append(d.split('.')[0])
+                    stations.append(d.split('.')[1])
+        else:
+             params = inputs['input']
+             stations = params['station']
+             networks = params['network']
+             data_dir = params['data_dir']
+             synt_dir = params['synt_dir']
+             event_file = params['events']
+             event_id = params['event_id']
+             stations_dir = params['stations_dir']
+             output_dir = params['output_dir']
 
-        event_id= "smi:webservices.ingv.it/fdsnws/event/1/query?eventId=1744261"
-        stations_dir= os.path.join(STAGED_DATA,'stations')
-        output_dir= os.path.join(STAGED_DATA,'output')
-
-        data=glob.glob(os.path.join(data_dir,'*'))
-        synt=glob.glob(os.path.join(synt_dir,'*'))
-        dlist=get_net_station(data)
-        slist=get_net_station(synt)
-
-        networks=[]
-        stations=[]
-        for i,d in enumerate(dlist):
-            if d in slist:
-                networks.append(d.split('.')[0])
-                stations.append(d.split('.')[1])
-        
         fe = 'v'
         if self.output_units == 'velocity':
             fe = 'v'
