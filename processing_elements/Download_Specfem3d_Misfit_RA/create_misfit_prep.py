@@ -35,7 +35,7 @@ class ReadDataPE(GenericPE):
         self.counter = 0
 
     def _process(self, inputs):
-        if not inputs['input']:
+        if not inputs:
             STAGED_DATA=os.environ['STAGED_DATA']
             data_dir=os.path.join(STAGED_DATA,'data')
             synt_dir=os.path.join(STAGED_DATA,'synth')
@@ -118,8 +118,7 @@ class ReadDataPE(GenericPE):
                     'stationxml' : sxml, 
                     'quakeml' : quakeml, 
                     'output_dir' : output_dir }
-                ],metadata={'output_units':self.output_units,'station' : station, 
-                            'eventId' : event_id, 'prov:type':'observed-pipeline'})
+                ])
             self.write(
                 'output_synt', [synt, {
                     'station' : sta, 
@@ -127,8 +126,7 @@ class ReadDataPE(GenericPE):
                     'stationxml' : sxml, 
                     'quakeml' : quakeml, 
                     'output_dir' : output_dir }
-                ],metadata={'output_units':self.output_units,'station' : station, 
-                            'eventId' : event_id,'prov:type':'synthetic-pipeline'})
+                ])
 
 
 class RotationPE(IterativePE):
