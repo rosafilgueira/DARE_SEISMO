@@ -5,6 +5,7 @@
 
 import json
 import os
+import glob,numpy
 import sys
 
 import preprocessing_functions as mf
@@ -14,7 +15,7 @@ from dispel4py.base import create_iterative_chain, ConsumerPE, IterativePE
 from dispel4py.workflow_graph import WorkflowGraph
 from dispel4py.provenance import *
 from seismo import SeismoSimpleFunctionPE, SeismoPE
-import glob,numpy,os
+from dispel4py.workflow_graph import write_image
 from obspy.core.event import read_events
 
 def get_net_station(list_files):
@@ -39,7 +40,7 @@ class ReadDataPE(GenericPE):
             STAGED_DATA=os.environ['STAGED_DATA']
             data_dir=os.path.join(STAGED_DATA,'data')
             synt_dir=os.path.join(STAGED_DATA,'synth')
-            event_file=os.path.join(STAGED_DATA,'events_info.xml')
+            event_file=os.path.join(STAGED_DATA,'event_info.xml')
             e=read_events(event_file)
             event_id=e.events[0].resource_id #quakeml with single event
             event_id= "smi:webservices.ingv.it/fdsnws/event/1/query?eventId=1744261"
@@ -225,6 +226,7 @@ else:
     graph.connect(synt_preprocess, 'output', store_synt, 'input')
     
 
+write_image(graph, "misfit.png")
 prov_config =  {
                     'provone:User': "fmagnoni", 
                     's-prov:description' : "provdemo demokritos",
