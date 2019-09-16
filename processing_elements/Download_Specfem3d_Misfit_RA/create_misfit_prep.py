@@ -112,7 +112,7 @@ class ReadDataPE(GenericPE):
             synt_stream = get_synthetics(synt_file, 
                                          get_event_time(quakeml, event_id), station, network)
             data, synt = sync_cut(real_stream, synt_stream)
-             self.write(
+            self.write(
                 'output_real', [data, { 
                     'station' : sta, 
                     'event' : event, 
