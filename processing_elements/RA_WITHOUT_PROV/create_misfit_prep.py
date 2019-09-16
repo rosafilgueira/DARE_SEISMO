@@ -36,13 +36,13 @@ class ReadDataPE(GenericPE):
         self._add_output('output_synt')
         self.counter = 0
 
-    def process(self, inputs):
+    def _process(self, inputs):
 
         if not inputs:
             STAGED_DATA=os.environ['STAGED_DATA']
             data_dir=os.path.join(STAGED_DATA,'data')
             synt_dir=os.path.join(STAGED_DATA,'synth')
-            event_file=os.path.join(STAGED_DATA,'events_simulation_CI_CI_test_0_1507128030823')
+            event_file=os.path.join(STAGED_DATA,'event_info.xml')
             e=read_events(event_file)
             event_id=e.events[0].resource_id #quakeml with single event
             event_id= "smi:webservices.ingv.it/fdsnws/event/1/query?eventId=1744261"
