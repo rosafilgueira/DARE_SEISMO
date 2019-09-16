@@ -35,7 +35,7 @@ class ReadDataPE(GenericPE):
         self._add_output('output_synt')
         self.counter = 0
 
-    def process(self, inputs):
+    def _process(self, inputs):
 
         if not inputs:
             STAGED_DATA=os.environ['STAGED_DATA']
