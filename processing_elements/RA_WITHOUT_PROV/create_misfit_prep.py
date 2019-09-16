@@ -41,7 +41,7 @@ class ReadDataPE(GenericPE):
             STAGED_DATA=os.environ['STAGED_DATA']
             data_dir=os.path.join(STAGED_DATA,'data')
             synt_dir=os.path.join(STAGED_DATA,'synth')
-            event_file=os.path.join(STAGED_DATA,'event_info.xml'')
+            event_file=os.path.join(STAGED_DATA,'event_info.xml')
             e=read_events(event_file)
             event_id=e.events[0].resource_id #quakeml with single event
             event_id= "smi:webservices.ingv.it/fdsnws/event/1/query?eventId=1744261"
