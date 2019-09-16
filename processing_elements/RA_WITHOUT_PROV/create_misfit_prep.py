@@ -59,6 +59,26 @@ class ReadDataPE(GenericPE):
                 if d in slist:
                     networks.append(d.split('.')[0])
                     stations.append(d.split('.')[1])
+
+            misfit_json={
+            "data": [
+                {
+                    "input": {
+                        "data_dir": data_dir,
+                        "synt_dir": synt_dir,
+                         "events": event_file,
+                        "event_id": event_id,
+                        "stations_dir": stations_dir,
+                        "output_dir" : output_dir,
+                        "network": networks,
+                        "station": stations
+                        }
+                    }
+                ]
+             }
+            filename='misfit_input.jsn'
+            with open(filename, "w") as write_file:
+                json.dump(misfit_json, write_file)
         else:
              params = inputs['input']
              stations = params['station']
