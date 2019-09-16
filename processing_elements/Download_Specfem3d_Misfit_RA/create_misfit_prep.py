@@ -6,14 +6,15 @@
 import json
 import os
 import sys
-import networkx as nx
-import glob,numpy
 
 import preprocessing_functions as mf
 from preprocessing_functions import get_event_time, get_synthetics, sync_cut, rotate_data
 from dispel4py.core import GenericPE
 from dispel4py.base import create_iterative_chain, ConsumerPE, IterativePE
 from dispel4py.workflow_graph import WorkflowGraph
+from dispel4py.provenance import *
+from seismo import SeismoSimpleFunctionPE, SeismoPE
+import glob,numpy,os
 from obspy.core.event import read_events
 
 def get_net_station(list_files):
@@ -25,7 +26,6 @@ def get_net_station(list_files):
     dlist=numpy.unique(dlist)
     return dlist
 
-
 class ReadDataPE(GenericPE):
     def __init__(self):
         GenericPE.__init__(self)
@@ -35,7 +35,6 @@ class ReadDataPE(GenericPE):
         self.counter = 0
 
     def _process(self, inputs):
-
         if not inputs:
             STAGED_DATA=os.environ['STAGED_DATA']
             data_dir=os.path.join(STAGED_DATA,'data')
@@ -120,7 +119,6 @@ class ReadDataPE(GenericPE):
                     'quakeml' : quakeml, 
                     'output_dir' : output_dir }
                 ])
-
             self.write(
                 'output_synt', [synt, {
                     'station' : sta, 
@@ -129,6 +127,7 @@ class ReadDataPE(GenericPE):
                     'quakeml' : quakeml, 
                     'output_dir' : output_dir }
                 ])
+
 
 class RotationPE(IterativePE):
     def __init__(self, tag):
@@ -155,6 +154,7 @@ class StoreStream(ConsumerPE):
     def __init__(self, tag):
         ConsumerPE.__init__(self)
         self.tag = tag
+        self._add_output('output')
 
     def _process(self, data):
         filelist = {}
@@ -166,6 +166,7 @@ class StoreStream(ConsumerPE):
                 stats['network'], stats['station'], stats['channel'], self.tag))
             stream[i].write(filename, format='MSEED')
             filelist[stats['channel']] = filename
+            self.write('output',stream,location=filename)
 
 
 class MisfitPreprocessingFunctionPE(IterativePE):
@@ -176,7 +177,17 @@ class MisfitPreprocessingFunctionPE(IterativePE):
     def _process(self, data):
         stream, metadata = data
         result = self.compute_fn(stream, **self.params)
-        return result, metadata
+        # return result, metadata
+        
+        if isinstance(result, dict) and '_d4p_prov' in result:
+            if isinstance(self, (ProvenanceType)):
+                result['_d4p_data']=result['_d4p_data'],metadata
+                return result
+            else:
+                return result['_d4p_data'], metadata
+        else:
+            return result, metadata
+
 
 
 def create_processing_chain(proc):
@@ -212,3 +223,56 @@ if proc['rotate_to_ZRT']:
 else:
     graph.connect(real_preprocess, 'output', store_real, 'input')
     graph.connect(synt_preprocess, 'output', store_synt, 'input')
+    
+
+prov_config =  {
+                    'provone:User': "fmagnoni", 
+                    's-prov:description' : "provdemo demokritos",
+                    's-prov:workflowName': "preproc",
+                    's-prov:workflowType': "seis:preprocess",
+                    's-prov:workflowId'  : "workflow process",
+                    's-prov:save-mode'   : 'service'         ,
+                    's-prov:WFExecutionInputs':  [{
+                        "url": "",
+                        "mime-type": "text/json",
+                        "name": "input_data"
+                         
+                     },{"url": "/prov/workflow/export/"+os.environ['DOWNL_RUNID'],
+                     "prov:type": "wfrun",
+                     "mime-type": "application/octet-stream",
+                     "name": "download_workflow",
+                     "runid":os.environ['DOWNL_RUNID']}],
+                    # defines the Provenance Types and Provenance Clusters for the Workflow Components                   
+                    's-prov:componentsType' : 
+                                       {'PE_taper': {'s-prov:type':(SeismoPE,),
+                                                     's-prov:prov-cluster':'seis:Processor'},
+                                        'PE_filter_bandpass': {'s-prov:type':(SeismoPE,),
+                                                     's-prov:prov-cluster':'seis:Processor'},
+                                        'StoreStream':    {'s-prov:prov-cluster':'seis:DataHandler',
+                                                           's-prov:type':(SeismoPE,)},
+                                        },
+                    's-prov:sel-rules': None
+                } 
+
+
+ProvenanceType.REPOS_URL=os.environ['REPOS_URL']
+
+
+#rid='JUP_PREPOC_'+getUniqueId()   
+rid=os.environ['PREPOC_RUNID']             
+                
+configure_prov_run(graph,
+                 provImpClass=(ProvenanceType,),
+                 input=prov_config['s-prov:WFExecutionInputs'],
+                 username=prov_config['provone:User'],
+                 runId=rid,
+                 description=prov_config['s-prov:description'],
+                 workflowName=prov_config['s-prov:workflowName'],
+                 workflowType=prov_config['s-prov:workflowType'],
+                 workflowId=prov_config['s-prov:workflowId'],
+                 save_mode=prov_config['s-prov:save-mode'],
+                 componentsType=prov_config['s-prov:componentsType'],
+                 sel_rules=prov_config['s-prov:sel-rules']
+
+                    )
+
