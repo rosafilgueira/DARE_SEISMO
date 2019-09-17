@@ -15,6 +15,7 @@ from dispel4py.base import create_iterative_chain, ConsumerPE, IterativePE
 from dispel4py.workflow_graph import WorkflowGraph
 from dispel4py.provenance import *
 from seismo import SeismoSimpleFunctionPE, SeismoPE
+from dispel4py.workflow_graph import write_image
 from obspy.core.event import read_events
 
 def get_net_station(list_files):
@@ -224,6 +225,7 @@ else:
     graph.connect(real_preprocess, 'output', store_real, 'input')
     graph.connect(synt_preprocess, 'output', store_synt, 'input')
     
+write_image(graph, "misfit.png")
 
 prov_config =  {
                     'provone:User': "fmagnoni", 
