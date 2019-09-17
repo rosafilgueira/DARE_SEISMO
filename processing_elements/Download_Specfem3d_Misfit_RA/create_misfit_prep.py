@@ -6,6 +6,7 @@
 import json
 import os
 import sys
+import glob,numpy
 
 import preprocessing_functions as mf
 from preprocessing_functions import get_event_time, get_synthetics, sync_cut, rotate_data
@@ -14,7 +15,6 @@ from dispel4py.base import create_iterative_chain, ConsumerPE, IterativePE
 from dispel4py.workflow_graph import WorkflowGraph
 from dispel4py.provenance import *
 from seismo import SeismoSimpleFunctionPE, SeismoPE
-import glob,numpy,os
 from obspy.core.event import read_events
 
 def get_net_station(list_files):
