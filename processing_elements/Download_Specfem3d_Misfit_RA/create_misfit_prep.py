@@ -12,20 +12,9 @@ from preprocessing_functions import get_event_time, get_synthetics, sync_cut, ro
 from dispel4py.core import GenericPE
 from dispel4py.base import create_iterative_chain, ConsumerPE, IterativePE
 from dispel4py.workflow_graph import WorkflowGraph
-from dispel4py.workflow_graph import write_image  #fm
 from dispel4py.provenance import *
 from seismo import SeismoSimpleFunctionPE, SeismoPE
-import glob,numpy,os
-from obspy.core.event import read_events
 
-def get_net_station(list_files):
-    dlist=[]
-    for d in list_files:
-        net=d.split('/')[-1].split('.')[0]
-        station=d.split('/')[-1].split('.')[1]
-        dlist.append(net+'.'+station)
-    dlist=numpy.unique(dlist)
-    return dlist
 
 class ReadDataPE(GenericPE):
     def __init__(self):
@@ -35,60 +24,16 @@ class ReadDataPE(GenericPE):
         self._add_output('output_synt')
         self.counter = 0
 
-    def _process(self, inputs):
-        if not inputs:
-            STAGED_DATA=os.environ['STAGED_DATA']
-            data_dir=os.path.join(STAGED_DATA,'data')
-            synt_dir=os.path.join(STAGED_DATA,'synth')
-            event_file=os.path.join(STAGED_DATA,'events_info.xml')
-            e=read_events(event_file)
-            event_id=e.events[0].resource_id #quakeml with single event
-            event_id= "smi:webservices.ingv.it/fdsnws/event/1/query?eventId=1744261"
-            stations_dir= os.path.join(STAGED_DATA,'stations')
-            output_dir= os.path.join(STAGED_DATA,'output')
-
-            data=glob.glob(os.path.join(data_dir,'*'))
-            synt=glob.glob(os.path.join(synt_dir,'*'))
-            dlist=get_net_station(data)
-            slist=get_net_station(synt)
-
-            networks=[]
-            stations=[]
-            for i,d in enumerate(dlist):
-                if d in slist:
-                    networks.append(d.split('.')[0])
-                    stations.append(d.split('.')[1])
-
-            misfit_json={
-            "data": [
-                {
-                    "input": {
-                        "data_dir": data_dir,
-                        "synt_dir": synt_dir,
-                         "events": event_file,
-                        "event_id": event_id,
-                        "stations_dir": stations_dir,
-                        "output_dir" : output_dir,
-                        "network": networks,
-                        "station": stations
-                        }
-                    }
-                ]
-             }
-            filename='misfit_input.jsn'
-            with open(filename, "w") as write_file:
-                json.dump(misfit_json, write_file)
-        else:
-             params = inputs['input']
-             stations = params['station']
-             networks = params['network']
-             data_dir = params['data_dir']
-             synt_dir = params['synt_dir']
-             event_file = params['events']
-             event_id = params['event_id']
-             stations_dir = params['stations_dir']
-             output_dir = params['output_dir']
-
+    def _process(self, inputs):  #as
+        params = inputs['input']
+        stations = params['station']
+        networks = params['network']
+        data_dir = params['data_dir']
+        synt_dir = params['synt_dir']
+        event_file = params['events']
+        event_id = params['event_id']
+        stations_dir = params['stations_dir']
+        output_dir = params['output_dir']
         fe = 'v'
         if self.output_units == 'velocity':
             fe = 'v'
@@ -108,7 +53,9 @@ class ReadDataPE(GenericPE):
             #synt_file = os.path.join(synt_dir, network + "." + station + "." + '?X?.sem' + fe)
             synt_file = os.path.join(synt_dir, network + "." + station + "." + '?X?.sem' + fe +'*') #rf+fm read sac files
             sxml = os.path.join(stations_dir, network + "." + station + ".xml")
-            real_stream, sta, event = mf.read_stream(data_file, sxml=sxml, event_file=quakeml,event_id=event_id)
+            real_stream, sta, event = mf.read_stream(data_file, sxml=sxml,
+                                                  event_file=quakeml,
+                                                  event_id=event_id)
             synt_stream = get_synthetics(synt_file, 
                                          get_event_time(quakeml, event_id), station, network)
             data, synt = sync_cut(real_stream, synt_stream)
@@ -128,7 +75,6 @@ class ReadDataPE(GenericPE):
                     'quakeml' : quakeml, 
                     'output_dir' : output_dir }
                 ])
-
 
 class RotationPE(IterativePE):
     def __init__(self, tag):
@@ -276,6 +222,4 @@ configure_prov_run(graph,
                  sel_rules=prov_config['s-prov:sel-rules']
 
                     )
-                    
-write_image(graph, "preproc.png")  #fm
 
