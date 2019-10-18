@@ -38,6 +38,7 @@ class ReadDataPE(GenericPE):
     def _process(self, inputs):
         if not inputs:
             STAGED_DATA=os.environ['STAGED_DATA']
+            PREP_IN_DATA = os.environ['PREP_IN_DATA']
             data_dir=os.path.join(STAGED_DATA,'data')
             synt_dir=os.path.join(STAGED_DATA,'synth')
             event_file=PREP_IN_DATA
