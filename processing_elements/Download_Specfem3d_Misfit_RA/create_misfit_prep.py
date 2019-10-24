@@ -36,6 +36,11 @@ class ReadDataPE(GenericPE):
         self.counter = 0
 
     def _process(self, inputs):
+        #fm
+        import pickle
+     	with open ("inputs", "w") as f:
+     		pickle.dump(inputs, f)
+        #fm
         if not inputs:
             STAGED_DATA=os.environ['STAGED_DATA']
             PREP_IN_DATA = os.environ['PREP_IN_DATA']
