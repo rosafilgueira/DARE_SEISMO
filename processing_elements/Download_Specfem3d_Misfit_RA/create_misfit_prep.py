@@ -76,7 +76,8 @@ class ReadDataPE(GenericPE):
                     }
                 ]
              }
-            filename=os.path.join(STAGED_DATA,'misfit_input.jsn')
+            #filename=os.path.join(STAGED_DATA,'misfit_input.jsn')
+            filename='/home/mpiuser/sfs/uploads/Th1s4sY0urT0k3Nn_wp6-input/misfit_input.jsn'
             with open(filename, "w") as write_file:
                 json.dump(misfit_json, write_file)
         else:
