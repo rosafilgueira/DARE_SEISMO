@@ -1,0 +1,21 @@
+{
+"CMT":
+    {
+    "_comment":                 "Create new CMTSOLUTION file from scratch",
+    "event name":               "Test",
+    "event time":               "2016-06-13T18:31:31.840000Z",
+    "time shift":               0.0,
+    "half duration":            0.0,
+    "mb":                  5.8,
+    "Ms":                  5.8,
+    "latorUTM":            33.6,
+    "longorUTM":           -118.4,
+    "depth":               10.0,
+    "Mrr":                 1.0e+23,
+    "Mtt":                 1.0e+23,
+    "Mpp":                 1.0e+23,
+    "Mrt":                 0.0e+00,
+    "Mrp":                 0.0e+00,
+    "Mtp":                 0.0e+00
+         }
+}
