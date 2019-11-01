@@ -48,7 +48,7 @@ docker exec -it <CONTAINER_ID> /bin/sh
 Inside the container install CWL
 
 ```
-apk add --update alpine-sdk make gcc python3-dev python-dev libxslt-dev libxml2-dev libc-dev openssl-dev libffi-dev zlib-dev py-pip openssh rm -rf /var/cache/apk/*
+apk add --update alpine-sdk make gcc python3-dev python-dev libxslt-dev libxml2-dev libc-dev openssl-dev libffi-dev zlib-dev py-pip openssh
 apk add linux-headers
 pip install cwltool
 pip install cwl-runner
