@@ -1,6 +1,6 @@
 # Docker image for SPECFEM3D_Cartesian
 
-## Build
+## Build your own container
 
 Build the Docker container:
 
@@ -10,6 +10,14 @@ docker build . -t specfem3d_mpi
 
 This creates a docker image with the tag "specfem3d_mpi:latest".
 You can choose any tag name and also specify version.
+
+
+## Alternative - Pull this container instead to build your own:
+
+```
+docker pull rosafilgueira/specfem3d_mpi:version1
+``` 
+
 
 ## Run container
 
