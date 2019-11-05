@@ -11,6 +11,13 @@ docker build . -t specfem3d_mpi
 This creates a docker image with the tag "specfem3d_mpi:latest".
 You can choose any tag name and also specify version.
 
+## Alternative - Pull this container instead to build your own:
+
+```
+docker pull rosafilgueira/specfem3d_mpi:version1
+``` 
+
+
 ## Run container
 
 Start the container and start a shell:
