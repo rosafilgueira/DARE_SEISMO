@@ -12,6 +12,12 @@ Build the Docker container:
 ```
 docker build . -t specfem3d_mpi
 ```
+## Alternative - Pull this container instead to build your own:
+
+```
+docker pull rosafilgueira/specfem3d_mpi:version1
+``` 
+
 ## Run container
 
 Start the container and start a shell:
