@@ -1,0 +1,301 @@
+{
+"execution label":     "MT3D",
+"UTM":                  true,
+"CMT":
+	    {
+	    "_comment":                 "if 'CMTSOLUTION file name' is present or not empty, the file is read in; if it is not present or empty, CMTSOLUTION file is created based on below settings",
+	    "CMTSOLUTION file name":    "CMTSOLUTION_initial", 
+	    "event name":               "Test",
+	    "event time":               "2016-06-13T18:31:31.840000Z",
+	    "time shift":               0.0,
+	    "half duration":            0.0,
+	    "event magnitude":
+	        {
+	         "mb":                  5.8,
+	         "Ms":                  5.8
+	         },
+	    "event location": 
+	        {
+	         "latorUTM":            33.6,
+	         "longorUTM":           -118.4,
+	         "depth":               10.0
+	        },
+	    "event MT":
+	        {
+	         "Mrr":                 1.0e+23,
+	         "Mtt":                 1.0e+23,
+	         "Mpp":                 1.0e+23,
+	         "Mrt":                 0.0e+00,
+	         "Mrp":                 0.0e+00,
+	         "Mtp":                 0.0e+00
+	         }
+	    },
+"RA":
+	{
+	"_comment":                 "RA (Rapid Assessment) test case is to calculate ground motion parameters",
+	"SPECFEM3D":
+	    {
+	    "_comment":                 "Set the names of the input files required to run a specfem3d simulations. These files will be uploaded to the cloud.",
+	    "mesh_vel":                  "mesh_vel.zip",
+		"parameter file":            "Par_file",
+		"station file":              "STATIONS",
+		"events":             {
+			"cmtsolution": ["CMTSOLUTION"]
+			}
+	    },
+	"processing":
+		{
+			"_comment":                 "set the file containg the list of pre-processing steps and related parameter set up; in the future a script to contruct this file will be created based on the dictionary 'processing parameters' ",
+			"processing filename":          "processing.json",
+			"processing parameters":
+				{
+					"_comment":                 "pre-processing steps and related parameter set up; order of steps is meaningful",
+				    "output_units": "velocity",
+				    "rotate_to_ZRT": true,
+				    "data_processing": [
+				        {
+				            "type": "detrend",
+				            "parameters": {
+				                "method": "linear"
+				            }
+				        },
+				        {
+				            "type": "taper",
+				            "parameters": {
+				                "taper_type": "hann",
+				                "max_percentage": 0.05
+				            }
+				        },
+				        {
+				            "type": "remove_response",
+				            "parameters": {
+				                "pre_filt": [0.005, 0.01, 8.0, 10.0],
+				                "response_output": "VEL"
+				            }
+				        },
+				        {
+				            "type": "filter_lowpass",
+				            "parameters": {
+				                "frequency": 2.0,
+				                "zerophase": false,
+				                "corners": 3
+				            }
+				        },
+				        {
+				            "type": "filter_highpass",
+				            "parameters": {
+				                "frequency": 0.1,
+				                "zerophase": false,
+				                "corners": 3
+				            }
+				        }
+				    ],
+					"synthetics_processing": [
+				        {
+				            "type": "detrend",
+				            "parameters": {
+				                "method": "linear"
+				            }
+				        },
+				        {
+				            "type": "taper",
+				            "parameters": {
+				                "taper_type": "hann",
+				                "max_percentage": 0.05
+				            }
+				        },
+				        {
+				            "type": "pre_filter",
+				            "parameters": {
+				                "pre_filt": [0.005, 0.01, 8.0, 10.0]
+				            }
+				        },
+				        {
+				            "type": "filter_lowpass",
+				            "parameters": {
+				                "frequency": 2.0,
+				                "zerophase": false,
+				                "corners": 3
+				            }
+				        },
+				        {
+				            "type": "filter_highpass",
+				            "parameters": {
+				                "frequency": 0.1,
+				                "zerophase": false,
+				                "corners": 3
+				            }
+				        }
+				    ]
+				}
+		}               
+	},
+"MT3D":
+	{
+	"_comment":                 "MT3D (Moment Tensor in 3D) test case is for the calculation of the source parameters (mechanism, location, magnitude) using 3D velocity models",
+	"SPECFEM3D":
+	    {
+	    "_comment":                 "Set the names of the input files required to run a specfem3d simulations. These files will be uploaded to the cloud.",
+	    "mesh_vel":                  "mesh_vel.zip",
+		"parameter file":            "Par_file",
+		"station file":              "STATIONS",
+		"events":             
+			{
+			"_comment":      "perturbation can be a number [0,1,2,3,4,5] or a string [''Mrr'',''Mtt'',...], The list of strings must be in agreement with the CMTSOLUTION notation (e.g. latorUTM for lat)",
+			"cmtsolution":    ["CMTSOLUTION_initial"],
+			"perturbations":  ["Mrr","longorUTM","depth"] 
+			}
+	    },
+	"processing":
+		{
+			"_comment":                 "set the file containg the list of pre-processing steps and related parameter set up; in the future a script to contruct this file will be created based on the dictionary 'processing parameters'",
+			"processing filename":          "processing.json",
+			"processing parameters":
+				{
+					"_comment":                 ["pre-processing steps and related parameter set up; order of steps is meaningful"],
+				    "output_units": "velocity",
+				    "rotate_to_ZRT": true,
+				    "data_processing": [
+				        {
+				            "type": "detrend",
+				            "parameters": {
+				                "method": "linear"
+				            }
+				        },
+				        {
+				            "type": "taper",
+				            "parameters": {
+				                "taper_type": "hann",
+				                "max_percentage": 0.05
+				            }
+				        },
+				        {
+				            "type": "remove_response",
+				            "parameters": {
+				                "pre_filt": [0.005, 0.01, 8.0, 10.0],
+				                "response_output": "VEL"
+				            }
+				        },
+				        {
+				            "type": "filter_lowpass",
+				            "parameters": {
+				                "frequency": 2.0,
+				                "zerophase": false,
+				                "corners": 3
+				            }
+				        },
+				        {
+				            "type": "filter_highpass",
+				            "parameters": {
+				                "frequency": 0.1,
+				                "zerophase": false,
+				                "corners": 3
+				            }
+				        }
+				    ],
+					"synthetics_processing": [
+				        {
+				            "type": "detrend",
+				            "parameters": {
+				                "method": "linear"
+				            }
+				        },
+				        {
+				            "type": "taper",
+				            "parameters": {
+				                "taper_type": "hann",
+				                "max_percentage": 0.05
+				            }
+				        },
+				        {
+				            "type": "pre_filter",
+				            "parameters": {
+				                "pre_filt": [0.005, 0.01, 8.0, 10.0]
+				            }
+				        },
+				        {
+				            "type": "filter_lowpass",
+				            "parameters": {
+				                "frequency": 2.0,
+				                "zerophase": false,
+				                "corners": 3
+				            }
+				        },
+				        {
+				            "type": "filter_highpass",
+				            "parameters": {
+				                "frequency": 0.1,
+				                "zerophase": false,
+				                "corners": 3
+				            }
+				        }
+				    ]
+				}
+		},               
+	"inversion_par":
+	    {
+	    "_comment":                 "decide if the initial CMTSOLUTION should be created (and then the related simulation executed); define the perturbation for the other parameters (and then which related simualtion should be executed)",
+		"initial simulation":               true,	
+		"dpar":
+	       {
+	        "dM":                     1.0e+23,
+	        "ddepth (km)":            5,
+	        "dloc (deg or km)":        0.18
+			}
+	    }, 
+	"pyflex_par":
+		{
+		"_comment":                 "set up parameters for pyflex",
+        "min_period": 0.5,
+        "max_period": 10.0,
+        "stalta_waterlevel": 0.1,
+        "s2n_limit":4.0,
+        "snr_max_base": 3.5,
+        "tshift_acceptance_level": 2.0,
+        "tshift_reference": 0.0,
+        "dlna_acceptance_level": 0.8,
+        "dlna_reference": 0.0,
+        "cc_acceptance_level": 0.7,
+        "earth_model": "ak135",
+        "min_surface_wave_velocity": 0.1,
+        "max_time_before_first_arrival": 5.0,
+        "c_0": 1.0,
+        "c_1": 2.0,
+        "c_2": 0.0,
+        "c_3a": 4.0,
+        "c_3b": 2.5,
+        "c_4a": 2.0,
+        "c_4b": 6.0,
+        "check_global_data_quality": true,
+        "snr_integrate_base": 10.0,
+        "noise_start_index": 0,
+        "noise_end_index": null,
+        "signal_start_index": null,
+        "signal_end_index": -1,
+        "window_signal_to_noise_type": "amplitude",
+        "resolution_strategy": "interval_scheduling"
+		},
+	"pycmt3d_par":
+		{
+		"_comment":                 "input file and set up parameters for pycmt3d",
+		"flexwin output filename":         "pyflex_win",
+		"weight_par":
+			{
+			"normalize_by_energy": false, 
+			"normalize_by_category": false,
+			"comp_weight":
+				{
+				"Z": 1,
+				"R": 1,
+				"T": 1
+				},
+			"love_dist_weight": 1, 
+			"pnl_dist_weight": 1,
+			"rayleigh_dist_weight": 1, 
+			"azi_exp_idx": 0, 
+			"azi_bins": 8,
+			"ref_dist": 100.0	
+			}
+		}
+	}
+}
