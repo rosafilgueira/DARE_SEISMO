@@ -280,5 +280,5 @@ else:
 #
 #                    )
                     
-write_image(graph, "preproc.png")  #fm
+#write_image(graph, "preproc.png")  #fm
 
