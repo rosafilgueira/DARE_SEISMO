@@ -229,56 +229,56 @@ else:
     graph.connect(synt_preprocess, 'output', store_synt, 'input')
     
 
-#prov_config =  {
-#                    'provone:User': "fmagnoni", 
-#                    's-prov:description' : "provdemo demokritos",
-#                    's-prov:workflowName': "preproc",
-#                    's-prov:workflowType': "seis:preprocess",
-#                    's-prov:workflowId'  : "workflow process",
-#                    's-prov:save-mode'   : 'service'         ,
-#                    's-prov:WFExecutionInputs':  [{
-#                        "url": "",
-#                        "mime-type": "text/json",
-#                        "name": "input_data"
-#                         
-#                     },{"url": "/prov/workflow/export/"+os.environ['DOWNL_RUNID'],
-#                     "prov:type": "wfrun",
-#                     "mime-type": "application/octet-stream",
-#                     "name": "download_workflow",
-#                     "runid":os.environ['DOWNL_RUNID']}],
-#                    # defines the Provenance Types and Provenance Clusters for the Workflow Components                   
-#                    's-prov:componentsType' : 
-#                                       {'PE_taper': {'s-prov:type':(SeismoPE,),
-#                                                     's-prov:prov-cluster':'seis:Processor'},
-#                                        'PE_filter_bandpass': {'s-prov:type':(SeismoPE,),
-#                                                     's-prov:prov-cluster':'seis:Processor'},
-#                                        'StoreStream':    {'s-prov:prov-cluster':'seis:DataHandler',
-#                                                           's-prov:type':(SeismoPE,)},
-#                                        },
-#                    's-prov:sel-rules': None
-#                } 
-#
-#
-#ProvenanceType.REPOS_URL=os.environ['REPOS_URL']
-#
-#
-##rid='JUP_PREPOC_'+getUniqueId()   
-#rid=os.environ['PREPOC_RUNID']             
-#                
-#configure_prov_run(graph,
-#                 provImpClass=(ProvenanceType,),
-#                 input=prov_config['s-prov:WFExecutionInputs'],
-#                 username=prov_config['provone:User'],
-#                 runId=rid,
-#                 description=prov_config['s-prov:description'],
-#                 workflowName=prov_config['s-prov:workflowName'],
-#                 workflowType=prov_config['s-prov:workflowType'],
-#                 workflowId=prov_config['s-prov:workflowId'],
-#                 save_mode=prov_config['s-prov:save-mode'],
-#                 componentsType=prov_config['s-prov:componentsType'],
-#                 sel_rules=prov_config['s-prov:sel-rules']
-#
-#                    )
+prov_config =  {
+                    'provone:User': "fmagnoni", 
+                    's-prov:description' : "provdemo demokritos",
+                    's-prov:workflowName': "preproc",
+                    's-prov:workflowType': "seis:preprocess",
+                    's-prov:workflowId'  : "workflow process",
+                    's-prov:save-mode'   : 'service'         ,
+                    's-prov:WFExecutionInputs':  [{
+                        "url": "",
+                        "mime-type": "text/json",
+                        "name": "input_data"
+                         
+                     },{"url": "/prov/workflow/export/"+os.environ['DOWNL_RUNID'],
+                     "prov:type": "wfrun",
+                     "mime-type": "application/octet-stream",
+                     "name": "download_workflow",
+                     "runid":os.environ['DOWNL_RUNID']}],
+                    # defines the Provenance Types and Provenance Clusters for the Workflow Components                   
+                    's-prov:componentsType' : 
+                                       {'PE_taper': {'s-prov:type':(SeismoPE,),
+                                                     's-prov:prov-cluster':'seis:Processor'},
+                                        'PE_filter_bandpass': {'s-prov:type':(SeismoPE,),
+                                                     's-prov:prov-cluster':'seis:Processor'},
+                                        'StoreStream':    {'s-prov:prov-cluster':'seis:DataHandler',
+                                                           's-prov:type':(SeismoPE,)},
+                                        },
+                    's-prov:sel-rules': None
+                } 
+
+
+ProvenanceType.REPOS_URL=os.environ['REPOS_URL']
+
+
+#rid='JUP_PREPOC_'+getUniqueId()   
+rid=os.environ['PREPOC_RUNID']             
+                
+configure_prov_run(graph,
+                 provImpClass=(ProvenanceType,),
+                 input=prov_config['s-prov:WFExecutionInputs'],
+                 username=prov_config['provone:User'],
+                 runId=rid,
+                 description=prov_config['s-prov:description'],
+                 workflowName=prov_config['s-prov:workflowName'],
+                 workflowType=prov_config['s-prov:workflowType'],
+                 workflowId=prov_config['s-prov:workflowId'],
+                 save_mode=prov_config['s-prov:save-mode'],
+                 componentsType=prov_config['s-prov:componentsType'],
+                 sel_rules=prov_config['s-prov:sel-rules']
+
+                    )
                     
 #write_image(graph, "preproc.png")  #fm
 
