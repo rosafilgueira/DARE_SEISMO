@@ -31,7 +31,8 @@ export REPOS_URL="http://testbed.project-dare.eu/prov/workflowexecutions/insert"
 #[{"specfem3d_data_url":"https://gitlab.com/project-dare/WP6_EPOS/raw/RA_total_script/processing_elements/Download_Specfem3d_Misfit_RA/data.zip", "output":"download_test.json"}]}'
 
 #Option2: Without saving the data - it doesnt create "download_test.json"
-dispel4py simple dispel4py_download.py -d '{"ReadSpecfem3d" :
+
+PYTHONPATH=/Users/rosafilgueira/EPCC/DARE/dispel4py:. python -m dispel4py.new.processor simple dispel4py_download.py -d '{"ReadSpecfem3d" :
 [{"specfem3d_data_url":"https://gitlab.com/project-dare/WP6_EPOS/raw/RA_total_script/processing_elements/Download_Specfem3d_Misfit_RA/data.zip"}]}'
 
 ##### Note: We can still use the other 2 scripts (create_download_json.py and download_FDSN.py), if we just want to create the input dataset (create_download_json.py) or just to download the data (download_FDSN.py) from the input

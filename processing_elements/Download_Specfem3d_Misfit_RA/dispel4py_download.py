@@ -360,7 +360,7 @@ graph.connect(downloadPE, 'output', watcher, "input")
 graph.connect(downloadPE, 'output', watcher_xml, "input")
 graph.connect(watcher, 'output', chain, "input")
 graph.connect(watcher_xml, 'output', xmlr, "input")
-write_image(graph, "downloadPE.png")
+#write_image(graph, "downloadPE.png")
 
 
 ProvenanceType.REPOS_URL=os.environ['REPOS_URL']
