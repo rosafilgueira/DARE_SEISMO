@@ -280,5 +280,6 @@ configure_prov_run(graph,
 
                     )
                     
-write_image(graph, "preproc.png")  #fm
+#write_image(graph, "preproc.png")  #fm
+
 
