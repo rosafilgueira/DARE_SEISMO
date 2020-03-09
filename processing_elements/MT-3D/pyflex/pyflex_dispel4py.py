@@ -48,13 +48,13 @@ class InterpolatePE(GenericPE):
         self._add_output('output')
 
     def _process(self, inputs):
-        OUTPUT_DATA=os.environ['OUTPUT_DATA']
-        path_d=os.path.join(OUTPUT_DATA,'data')
-        path_s=os.path.join(OUTPUT_DATA,'synth')
+        PREP_OUTPUT=os.environ['PREP_OUTPUT']
+        path_d=os.path.join(PREP_OUTPUT,'data')
+        path_s=os.path.join(PREP_OUTPUT,'synth')
         
-        INTERPOLATED_DATA=os.environ['INTERPOLATED_DATA']
-        path_id=os.path.join(INTERPOLATED_DATA,'data')
-        path_is=os.path.join(INTERPOLATED_DATA,'synth')
+        INPUT_DATA=os.environ['INPUT_DATA']
+        path_id=os.path.join(INPUT_DATA,'data')
+        path_is=os.path.join(INPUT_DATA,'synth')
         
         data=glob.glob(os.path.join(path_d,'*'))
         synt=glob.glob(os.path.join(path_s,'*'))
@@ -67,7 +67,7 @@ class InterpolatePE(GenericPE):
                 stations.append(d.split('.')[1])
         
         ### for pyflex later  
-        event_file=INTERPOLATED_DATA+'/events_info.xml'
+        event_file=INPUT_DATA+'/events_info.xml'
         e=read_events(event_file)
         event_id=e.events[0].resource_id #quakeml with single event
         event = read_event(event_file, event_id)
@@ -110,12 +110,12 @@ class PyflexPE(GenericPE):
 
     def _process(self, inputs):
 
-        path_output=os.environ['PYFLEX_RESULTS']
+        path_output= os.environ['PYFLEX_OUTPUT']
         pyflex_outdir= os.path.join(path_output,'MEASURE')
-        name_output=path_output+'/pyflex_win.txt'
+        name_output= pyflex_outdir+'/pyflex_win.txt'
         file_output_pyflex=open(name_output,"w")
 
-        INTERPOLATED_DATA=os.environ['INTERPOLATED_DATA']
+        INPUT_DATA=os.environ['INPUT_DATA']
 
         data_name_f='/data'
         synth_name_f='/synth'
@@ -124,7 +124,7 @@ class PyflexPE(GenericPE):
         if list(component_data)[-1]!='E' and list(component_data)[-1]!='N' and list(component_data)[-1]==list(component_synth)[-1]: 
             plot_filename = net+'.'+st+'.'+component_synth+'.png'
 
-            station_file = INTERPOLATED_DATA+"/stations/"+net+'.'+st+'.xml'
+            station_file = INPUT_DATA+"/stations/"+net+'.'+st+'.xml'
             station = obspy.read_inventory(station_file, format="STATIONXML")
             windows = pyflex.select_windows(obs_data, synth_data, config, event=event, station=station, plot=True, plot_filename= pyflex_outdir+'/'+plot_filename)
             if len(windows)>0:
@@ -166,6 +166,3 @@ interpolate.name = 'interpolate'
 pyflexPE = PyflexPE(config)
 
 graph.connect(interpolate, 'output', pyflexPE, 'input')
-
-
-
