@@ -95,9 +95,9 @@ class InterpolatePE(GenericPE):
             for trace in data:
                 trace.write(path_id+"/"+str(trace.stats.network+'.'+trace.stats.station+'.'+trace.stats.channel)+".data",format='sac') 
            
-            data=obspy.read(path_id+'/'+net+'.'+ st + '.' + component_data +'.data')
-            synth=obspy.read(path_is+'/'+net+'.'+ st + '.' + component_synth +'.synth')
-            self.write('output',[synth, data, net, st, component_data, component_synth, event])
+            data_dir=path_id+'/'+net+'.'+ st + '.' + component_data +'.data'
+            synth_dir=path_is+'/'+net+'.'+ st + '.' + component_synth +'.synth'
+            self.write('output',[synth_dir, data_dir, net, st, component_data, component_synth, event])
             
 
 class PyflexPE(GenericPE):
@@ -120,7 +120,9 @@ class PyflexPE(GenericPE):
         data_name_f='/data'
         synth_name_f='/synth'
 
-        synth_data, obs_data, net, st, component_data, component_synth, event = inputs['input']
+        synth_dir, obs_dir, net, st, component_data, component_synth, event = inputs['input']
+        synth_data = obspy.read(synth_dir)
+        obs_data = obspy.read(obs_dir)
         if list(component_data)[-1]!='E' and list(component_data)[-1]!='N' and list(component_data)[-1]==list(component_synth)[-1]: 
             plot_filename = net+'.'+st+'.'+component_synth+'.png'
 
