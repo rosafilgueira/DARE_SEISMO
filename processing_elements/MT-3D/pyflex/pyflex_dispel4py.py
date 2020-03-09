@@ -53,8 +53,8 @@ class InterpolatePE(GenericPE):
         path_s=os.path.join(OUTPUT_DATA,'synth')
         
         INTERPOLATED_DATA=os.environ['INTERPOLATED_DATA']
-        path_id=os.path.join(INTERPOLATED_DATA,'data_pe')
-        path_is=os.path.join(INTERPOLATED_DATA,'synth_pe')
+        path_id=os.path.join(INTERPOLATED_DATA,'data')
+        path_is=os.path.join(INTERPOLATED_DATA,'synth')
         
         data=glob.glob(os.path.join(path_d,'*'))
         synt=glob.glob(os.path.join(path_s,'*'))
