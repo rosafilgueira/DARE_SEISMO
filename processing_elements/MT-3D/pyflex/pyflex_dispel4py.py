@@ -47,14 +47,22 @@ class InterpolatePE(GenericPE):
         self._add_output('output')
 
     def _process(self, inputs):
-        PREP_OUTPUT=os.environ['PREP_OUTPUT']
-        path_d=os.path.join(PREP_OUTPUT,'data')
-        path_s=os.path.join(PREP_OUTPUT,'synth')
+        prep_output=inputs['prep_output']
+        path_d=os.path.join(prep_output,'data')
+        path_s=os.path.join(prep_output,'synth')
         
-        INPUT_DATA=os.environ['INPUT_DATA']
-        path_id=os.path.join(INPUT_DATA,'data')
-        path_is=os.path.join(INPUT_DATA,'synth')
-        
+        input_data= inputs['input_data']
+        path_id=os.path.join(input_data,'data')
+        path_is=os.path.join(input_data,'synth')
+
+        if not os.path.exists(path_id):
+            os.mkdir(path_id)
+
+        if not os.path.exists(path_is):
+            os.mkdir(path_is)
+       
+        pyflex_output= inputs['pyflex_output']
+
         data=glob.glob(os.path.join(path_d,'*'))
         synt=glob.glob(os.path.join(path_s,'*'))
         dlist=get_net_station(data)
@@ -66,7 +74,7 @@ class InterpolatePE(GenericPE):
                 stations.append(d.split('.')[1])
         
         ### for pyflex later  
-        event_file=INPUT_DATA+'/events_info.xml'
+        event_file=input_data+'/events_info.xml'
         e=read_events(event_file)
         event_id=e.events[0].resource_id #quakeml with single event
         event = read_event(event_file, event_id)
@@ -96,7 +104,7 @@ class InterpolatePE(GenericPE):
            
             data_dir=path_id+'/'+net+'.'+ st + '.' + component_data +'.data'
             synth_dir=path_is+'/'+net+'.'+ st + '.' + component_synth +'.synth'
-            self.write('output',[synth_dir, data_dir, net, st, component_data, component_synth, event])
+            self.write('output',[synth_dir, data_dir, net, st, component_data, component_synth, event, input_data, pyflex_output])
             
 
 class PyflexPE(GenericPE):
@@ -109,23 +117,22 @@ class PyflexPE(GenericPE):
 
     def _process(self, inputs):
 
-        path_output= os.environ['PYFLEX_OUTPUT']
-        pyflex_outdir= os.path.join(path_output,'MEASURE')
+        synth_dir, obs_dir, net, st, component_data, component_synth, event, input_data, pyflex_output = inputs['input']
+        
+        pyflex_outdir= os.path.join(pyflex_output,'MEASURE')
+        if not os.path.exists(pyflex_outdir):
+            os.mkdir(pyflex_outdir)
         name_output= pyflex_outdir+'/pyflex_win.txt'
         file_output_pyflex=open(name_output,"w")
-
-        INPUT_DATA=os.environ['INPUT_DATA']
-
         data_name_f='/data'
         synth_name_f='/synth'
 
-        synth_dir, obs_dir, net, st, component_data, component_synth, event = inputs['input']
         synth_data = obspy.read(synth_dir)
         obs_data = obspy.read(obs_dir)
         if list(component_data)[-1]!='E' and list(component_data)[-1]!='N' and list(component_data)[-1]==list(component_synth)[-1]: 
             plot_filename = net+'.'+st+'.'+component_synth+'.png'
 
-            station_file = INPUT_DATA+"/stations/"+net+'.'+st+'.xml'
+            station_file = input_data+"/stations/"+net+'.'+st+'.xml'
             station = obspy.read_inventory(station_file, format="STATIONXML")
             windows = pyflex.select_windows(obs_data, synth_data, config, event=event, station=station, plot=True, plot_filename= pyflex_outdir+'/'+plot_filename)
             if len(windows)>0:
@@ -165,5 +172,4 @@ graph = WorkflowGraph()
 interpolate = InterpolatePE()
 interpolate.name = 'interpolate'
 pyflexPE = PyflexPE(config)
-
 graph.connect(interpolate, 'output', pyflexPE, 'input')
