@@ -6,7 +6,6 @@ import networkx as nx
 import glob,numpy
 from obspy.core.event import read_events, ResourceIdentifier
 import pyflex
-from pyflex import WindowSelector
 
 import logging
 logger=logging.getLogger('pyflex')
