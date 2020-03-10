@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-#export PYTHONPATH=$PYTHONPATH:.
+export PYTHONPATH=$PYTHONPATH:.
 
 #Synthetics and observed data from the preprocess step
 export PREP_OUTPUT='./output/'
@@ -22,6 +22,6 @@ rm -rf ./results/MEASURE
 mkdir -p ./results/MEASURE
 
 
-dispel4py simple pyflex_dispel4py.
-#PYTHONPATH=/Users/rosafilgueira/EPCC/DARE/dispel4py:. python -m dispel4py.new.processor simple pyflex_dispel4py.
+dispel4py simple pyflex_dispel4py.py
+
 
