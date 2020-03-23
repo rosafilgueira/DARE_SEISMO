@@ -21,10 +21,8 @@ os.environ['PREPOC_RUNID'] = os.environ['RUN_ID']
 os.environ['REPOS_URL'] = 'http://'+os.getenv('SPROV_SERVICE_HOST')+':'+os.getenv('SPROV_SERVICE_PORT')+'/workflowexecutions/insert'
 os.environ['MISFIT_PREP_CONFIG'] = '/home/mpiuser/sfs/fmagnoni/uploads/wp6-input/wp6_inputfiles/processing.json'
 os.environ['PREP_IN_DATA'] = '/home/mpiuser/sfs/fmagnoni/uploads/wp6-input/wp6_inputfiles/events_info.xml'
-os.environ['OUTPUT'] = '/home/mpiuser/sfs/specfem/fmagnoni_demo_data/output'
-OUTPUT=os.environ['OUTPUT']
 try:
-    os.mkdir("+OUTPUT+")
+    os.mkdir('/home/mpiuser/sfs/specfem/fmagnoni_demo_data/output')
 except:
     pass
 
