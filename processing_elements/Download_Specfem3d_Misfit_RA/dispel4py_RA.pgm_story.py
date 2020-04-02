@@ -190,8 +190,8 @@ class NormPE(GenericPE):
         data_d_mean, data_v_mean, data_a_mean, data_d_max, data_v_max, data_a_max = calculate_norm(stream,self.ty,delta)
         # self.write('output_mean', [stream, filename, (data_d_mean, data_v_mean, data_a_mean), 'mean'])
         # self.write('output_max', [stream, filename, (data_d_max, data_v_max, data_a_max), 'max'])
-        self.write('output_mean', [stream, filename, (data_d_mean, data_v_mean, data_a_mean), 'mean'],metadata={"output_d_mean":data_d_mean,"output_v_mean":data_v_mean,"output_a_mean":data_a_mean})  #prov
-        self.write('output_max', [stream, filename, (data_d_max, data_v_max, data_a_max), 'max'],metadata={"output_d_max":data_d_max,"output_v_max":data_v_max,"output_a_max":data_a_max})   #prov     
+        self.write('output_mean', [stream, filename, (data_d_mean, data_v_mean, data_a_mean), 'mean'],metadata={"output_d_mean":data_d_mean.tolist(),"output_v_mean":data_v_mean.tolist(),"output_a_mean":data_a_mean.tolist()})  #prov
+        self.write('output_max', [stream, filename, (data_d_max, data_v_max, data_a_max), 'max'],metadata={"output_d_max":data_d_max.tolist(),"output_v_max":data_v_max.tolist(),"output_a_max":data_a_max.tolist()})   #prov
 
 
 

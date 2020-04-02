@@ -35,7 +35,7 @@ PYTHONPATH=/Users/rosafilgueira/EPCC/DARE/dispel4py:. python -m dispel4py.new.pr
 
 # ####### 5. Get ground motion parameters and compare them
 
-searchpath="./misfit_data/output/"
+#searchpath="./misfit_data/output/"
 PYTHONPATH=/Users/rosafilgueira/EPCC/DARE/dispel4py:. python -m dispel4py.new.processor simple dispel4py_RA.pgm_story.py -d '{"streamProducerReal": [ {"input":"'$searchpath'" } ], "streamProducerSynth": [ {"input": "'$searchpath'"} ]}'
 
 # ####### 6. Plot the PGM map

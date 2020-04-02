@@ -13,16 +13,6 @@ except ImportError:
     from io import StringIO
 
 import sys,os
-path = "/home/mpiuser/sfs/d4p"
-path = os.path.join(path, os.environ["RUN_DIR"])
-os.system('wget -P {} https://gitlab.com/project-dare/WP6_EPOS/raw/RA_total_script/processing_elements/Download_Specfem3d_Misfit_RA/domain.py'.format(path))
-os.system('wget -P {} https://gitlab.com/project-dare/WP6_EPOS/raw/RA_total_script/processing_elements/Download_Specfem3d_Misfit_RA/download_helpers.py'.format(path))
-os.system('wget -P {} https://gitlab.com/project-dare/WP6_EPOS/raw/RA_total_script/processing_elements/Download_Specfem3d_Misfit_RA/utils.py'.format(path))
-os.system('wget -P {} https://gitlab.com/project-dare/WP6_EPOS/raw/RA_total_script/processing_elements/Download_Specfem3d_Misfit_RA/seismo.py'.format(path))
-sys.path.append(os.environ['PWD'])
-os.environ['STAGED_DATA'] = '/home/mpiuser/sfs/specfem/fmagnoni_demo_data'
-os.environ['DOWNL_RUNID'] = os.environ['RUN_ID']
-os.environ['REPOS_URL'] = 'http://'+os.getenv('SPROV_SERVICE_HOST')+':'+os.getenv('SPROV_SERVICE_PORT')+'/workflowexecutions/insert'
 import re
 import numpy
 
@@ -370,7 +360,7 @@ graph.connect(downloadPE, 'output', watcher, "input")
 graph.connect(downloadPE, 'output', watcher_xml, "input")
 graph.connect(watcher, 'output', chain, "input")
 graph.connect(watcher_xml, 'output', xmlr, "input")
-#write_image(graph, "downloadPE.png")
+# write_image(graph, "downloadPE.png")
 
 
 ProvenanceType.REPOS_URL=os.environ['REPOS_URL']

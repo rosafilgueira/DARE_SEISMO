@@ -16,6 +16,7 @@ export PYTHONPATH=$PYTHONPATH:.
 export MISFIT_PREP_CONFIG="processing.json"
 export STAGED_DATA="./misfit_data/"
 export OUTPUT="./GM/"
+export PREP_IN_DATA="./misfit_data/events_info.xml"
 ##fm: added for provenance 
 export DOWNL_RUNID="DOWNL-"`uuidgen`
 export PREPOC_RUNID="PREPROC-"`uuidgen`
@@ -31,6 +32,7 @@ export REPOS_URL="http://testbed.project-dare.eu/prov/workflowexecutions/insert"
 
 
 ######## 2. Create input for download -- it reads the input files of the specfem3d simulation and creates the corresponding input json file for the following download workflow
+
 dispel4py simple create_download_json.py -d '{"WJSON" :
 [{"specfem3d_data_url":"https://gitlab.com/project-dare/WP6_EPOS/raw/RA_total_script/processing_elements/Download_Specfem3d_Misfit_RA/data.zip",
 "output":"download_test.json"}]}'
@@ -48,4 +50,4 @@ searchpath="./misfit_data/output/"
 dispel4py simple dispel4py_RA.pgm_story.py -d '{"streamProducerReal": [ {"input":"'$searchpath'" } ], "streamProducerSynth": [ {"input": "'$searchpath'"} ]}'
 
 # ####### 6. Plot the PGM map --- it plots maps of pgm parameters and of comparisons between data and synth
-dispel4py simple dispel4py_RAmapping.py
+python -m dispel4py.new.processor simple dispel4py_RAmapping.py

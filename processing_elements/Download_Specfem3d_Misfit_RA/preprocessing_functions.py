@@ -218,9 +218,11 @@ def remove_response(stream, pre_filt=(0.01, 0.02, 8.0, 10.0),
 
     Assumes stream.attach_response has been called before.
     """
+    print("Before removing response %s" %stream[0].stats)
     stream.remove_response(pre_filt=pre_filt,
                            output=response_output,
                            zero_mean=False, taper=False)
+    print("After removing response %s" %stream[0].stats)
     return stream
 
 
