@@ -1,7 +1,14 @@
-!/bin/bash
+#!/bin/bash
 set -x 
 
-# I think the following export is not needed - just in case, I leave it here commented. 
-#export PYTHONPATH=$PYTHONPATH:.
+json_input='Input.json'
 
-dispel4py simple pyflex_dispel4py.py -d '{"interpolate": [ {"input_data":"input", "prep_output": "output", "pyflex_output": "results" }]}'
+rm -rf input/data/*
+rm -rf input/synth/*
+
+### Running the workflow in sequential
+# PYTHONPATH=/Users/rosafilgueira/EPCC/DARE/dispel4py:.
+python -m dispel4py.new.processor simple pyflex_dispel4py.py -d '{"producer": [ {"input_data":"input", "prep_output": "output", "pyflex_output": "results", "json_input": "'$json_input'" }]}'   
+
+### Running the workflow in Parallel - Multiprocessing - 10 cores
+#PYTHONPATH=/Users/rosafilgueira/EPCC/DARE/dispel4py:. python -m dispel4py.new.processor multi pyflex_dispel4py_json.py -n 10 -d '{"producer": [ {"input_data":"input", "prep_output": "output", "pyflex_output": "results", "json_input": "'$json_input'" }]}'   
